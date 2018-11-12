@@ -2,12 +2,18 @@
 ## Installation
 1. Create directory for your workspace
 2. Enter the workspace directory using  
+    '''bash 
     cd  \<workspace\>
+    '''
 3. If you want to use the install script from our repository:
   * Use the following command to download the script:  
+  '''bash
     wget -O install.sh https://github.com/carpe-noctem-cassel/telegram-client/raw/master/install.sh
-  * set the execuatble flag with:  
+  '''
+  * set the execuatble flag with:
+  '''bash
     chmod +x install.sh
+  '''
   * Run the script using  
     ./install.sh
 4. If you can not setup the project using a script or if the script does not work proceed with the next step.
