@@ -1,9 +1,12 @@
 # telegram-client
 ## Installation
 1. Create directory for your workspace
+    ```bash
+    mkdir <workspace>
+    ```
 2. Enter the workspace directory using  
     ```bash 
-    cd  \<workspace\>
+    cd  <workspace>
     ```
 3. If you want to use the install script from our repository:
   * Use the following command to download the script:  
