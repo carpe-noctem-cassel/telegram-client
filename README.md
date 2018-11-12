@@ -1,4 +1,7 @@
 # telegram-client
+## Description
+This project is supposed to build a telegram bot to allow natural language communication between humans an distributed robots from distributet systems group of the univerity of Kassel.  
+
 ## Installation
 1. Create directory for your workspace
     ```bash
