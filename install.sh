@@ -2,7 +2,7 @@
 
 echo "Welcome to teamwork-\"Chatbot\" setup assistant."
 
-depends="git g++ make binutils cmake libssl-dev libboost-system-dev"
+depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl"
 
 echo "Installing neccesary dependencies"
 sudo apt install $depends
@@ -20,4 +20,5 @@ else
 fi
 
 echo "Building Telegram api"
-(cd ~/teamwork-ws/tgbot-cpp ; cmake . ; make ; sudo make install)
+dir=$(pwd)
+(cd $dir/tgbot-cpp ; cmake . ; make ; sudo make install)
