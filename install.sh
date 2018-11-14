@@ -2,6 +2,11 @@
 
 echo "Welcome to teamwork-\"Chatbot\" setup assistant."
 
+depends="git g++ make binutils cmake libssl-dev libboost-system-dev"
+
+echo "Installing neccesary dependencies"
+sudo apt install $depends
+
 echo "Cloning repositorys"
 if [ -d "$telegramm-client" ]; then
 	echo "Skipping repository \"telegram-client\""
@@ -13,11 +18,6 @@ if [ -d "$tgbot-cpp" ]; then
 else
 	git clone https://github.com/reo7sp/tgbot-cpp.git
 fi
-
-depends="g++ make binutils cmake libssl-dev libboost-system-dev"
-
-echo "Installing neccesary dependencies"
-sudo apt install $depends
 
 echo "Building Telegram api"
 (cd ~/teamwork-ws/tgbot-cpp ; cmake . ; make ; sudo make install)
