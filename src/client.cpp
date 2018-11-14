@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <tgbot/tgbot.h>
+#include <fstream>
 
 void reply(TgBot::Bot &bot, TgBot::Message::Ptr message, std::string reply);
 
@@ -12,7 +13,9 @@ int main(int argc, char* argv[])
 	bot.getEvents().onCommand("start", [&bot](TgBot::Message::Ptr message){
 		bot.getApi().sendMessage(message->chat->id, "Hi!");
 	});
-	bot.getEvents().onNonCommandMessage([&bot](TgBot::Message::Ptr message){reply(bot, message, "Yes Master!")});
+	bot.getEvents().onNonCommandMessage([&bot](TgBot::Message::Ptr message){reply(bot, message, "Yes Master!");
+		bot.getApi().sendMessage(message->chat->id, "Your msg was: " + message->text);
+	});
 
 
 	try {
@@ -31,6 +34,10 @@ int main(int argc, char* argv[])
 
 void reply(TgBot::Bot &bot, TgBot::Message::Ptr message, std::string reply)
 {
-	bot.getApi().sendMessage(message->chat->id, "Yes Master!")
-	std::cout << "Replying: " << message->text << '\n';
+	bot.getApi().sendMessage(message->chat->id, "Yes Master!");
+	std::string text = message->text;
+	std::cout << "Replying: " << text << '\n';
+	std::ifstream in("logs.txt");
+	in >> message->chat->id >> text;
+	in.close();
 }
