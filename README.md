@@ -62,4 +62,17 @@ https://github.com/reo7sp/tgbot-cpp.git
 ```bash
     git clone https://github.com/carpe-noctem-cassel/telegram-client.git
 ```
-13. more steps to come...
+14. Installing the official Telegram client:  
+    * Make shure that you are in your workspace and change to the directory of the telegram-client repository.  
+```bash
+    cd telegram-client  
+```
+    * Run the install script with:  
+```bash
+    sudo ./telegram-desktop-setup.sh  
+```
+15. Change the ownership of the executable of the telegram client.
+```bash
+    sudo chown <username> /usr/local/bin/telegram
+```
+16. more steps to come...
