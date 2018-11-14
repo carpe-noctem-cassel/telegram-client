@@ -54,7 +54,7 @@ This project is supposed to build a telegram bot to allow natural language commu
 ```bash
     cd ..
 ```
-12. clone our repolitory:  
+12. clone our repository:  
 ```bash
     git clone https://github.com/carpe-noctem-cassel/telegram-client.git
 ```
