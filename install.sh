@@ -2,7 +2,7 @@
 
 echo "Welcome to teamwork-\"Chatbot\" setup assistant."
 
-depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl"
+depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl capnproto"
 
 echo "Installing neccesary dependencies"
 sudo apt install $depends
