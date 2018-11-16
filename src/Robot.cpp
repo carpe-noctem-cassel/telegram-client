@@ -121,6 +121,30 @@ bool Robot::isIdKnown(int id)
 	return false;
 }
 
+bool Robot::checkAuthentification(std::string reply, int id)
+{
+	if(!this->isUserAuthenticated(id))
+	{
+		std::cout << "User not authenticated.\n";
+		std::string request = this->users[this->getUserIndexById(id)].doAuthenticationStep(reply);
+		if(request != "")
+		{
+			std::cout << "Sending request: " << request << '\n';
+			this->bot->getApi().sendMessage(id, request);
+		}
+	}
+	else
+	{
+		std::cout << "User is authenticated.\n";
+	}
+	std::cout.flush();
+}
+
+bool Robot::isUserAuthenticated(int id)
+{
+	return this->users[this->getUserIndexById(id)].isUserAuthenticated();
+}
+
 // ==================================================================
 // Misc:
 
@@ -215,30 +239,12 @@ void Robot::messageEvent(TgBot::Message::Ptr message)
 	if(this->appendUser(message->from->languageCode, message->from->username, "", message->from->id))
 	{
 		std::cout << "Unknown user detected!\n";
-		this->bot->getApi().sendMessage(message->from->id, "How is your name?");
+		//this->bot->getApi().sendMessage(message->from->id, "How is your name?");
 	}
 	else
 	{
 		std::cout << "Known User detected!\n";
-		int id = this->getUserIndexById(message->from->id);
-		if(id >= 0)
-		{
-			if(!this->users[id].isDataComplete())
-			{
-				std::cout << "User data is incomplete.\n";
-				if(message->text.find("my name is ") == 0)
-				{
-					std::string name = message->text.substr(11);
-					std::cout << "Set custom name to " << name << '\n';
-					this->updateCustomName(name, message->from->id);
-					this->bot->getApi().sendMessage(message->from->id, "Thanks!");
-				}
-			}
-			else
-			{
-				std::cout << "User data is complete.\n";
-			}
-		}
+		bool process = this->checkAuthentification(message->text, message->from->id);
 	}
 	std::cout.flush();
 }

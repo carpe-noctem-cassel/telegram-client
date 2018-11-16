@@ -23,6 +23,7 @@ class User
 		std::string getUserName();
 		std::string getCustomName();
 		std::string getLanguageCode();
+		bool        isUserAuthenticated();
 		int         getUserId();
 
 		// Misc
@@ -36,7 +37,7 @@ class User
 		std::string firstName;
 		std::string lastName;
 		std::string customName;
-		bool complete;
+		bool authenticated;
 		int id;
 		int authState;
 };

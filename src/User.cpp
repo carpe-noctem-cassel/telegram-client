@@ -64,6 +64,11 @@ int User::getUserId()
 	return this->id;
 }
 
+bool User::isUserAuthenticated()
+{
+	return this->authenticated;
+}
+
 // ===============================================================
 // Misc:
 
@@ -91,8 +96,9 @@ std::string User::doAuthenticationStep(std::string reply)
 		case 3:
 			// got all importent data
 			// -> ask for the prefered language code
-			this->authState++:
+			this->authState++;
 		default:
+			this->authenticated = true;
 			return "";
 	}
 }
@@ -106,11 +112,12 @@ void User::updateData(std::string uName, std::string cName, std::string lang, in
 	this->setLanguageCode(lang);
 	this->setUserId(id);
 	std::cout << "setting completeness to " << (complete ? "TRUE" : "FALSE") << '\n';
-	this->complete = complete;
+	this->authenticated = false;
 }
 
-bool User::isDataComplete()
+/*bool User::isDataComplete()
 {
+	// Is probably not needed anymore
 	if(this->complete == false)
 	{
 		std::cout << "User complete is not set.\nTesting . . .\n";
@@ -141,4 +148,4 @@ bool User::isDataComplete()
 		std::cout.flush();
 		return true;
 	}
-}
+}*/

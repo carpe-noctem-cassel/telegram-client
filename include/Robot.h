@@ -28,6 +28,8 @@ class Robot
 		void updateUserName(std::string uName, int id);
 		void updateLanguageCode(std::string lang, int id);
 		bool isIdKnown(int id);
+		bool checkAuthentification(std::string reply, int id);
+		bool isUserAuthenticated(int id);
 
 		// Misc
 		void addCommand(std::string text);
