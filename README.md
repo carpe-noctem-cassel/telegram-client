@@ -7,6 +7,8 @@ The repository depends on the Telegram bot api from reo7sp:
 https://github.com/reo7sp/tgbot-cpp.git  
 The documentation of zeromq:  
 http://zguide.zeromq.org/page:all  
+The capnproto documentation:  
+http://capnproto.github.io/pycapnp/  
 
 ## Installation
 1. Create directory for your workspace
