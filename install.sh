@@ -2,7 +2,10 @@
 
 echo "Welcome to teamwork-\"Chatbot\" setup assistant."
 
-depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl capnproto"
+depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl capnproto libcapnp-dev libzmq3-dev"
+
+echo "Adding zeromq key"
+wget https://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_18.04/Release.key -O- | sudo apt-key add
 
 echo "Installing neccesary dependencies"
 sudo apt install $depends
