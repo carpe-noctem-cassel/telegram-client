@@ -15,7 +15,13 @@ https://github.com/reo7sp/tgbot-cpp.git
     ```bash 
     cd  <workspace>
     ```
-3. If you want to use the install script from our repository:
+3. Add the package source for zeromq with the folllowing three commands:  
+   ```bash
+   sudo -i
+   echo "deb http://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_18.04/ ./" >> /etc/apt/sources.list
+   exit
+   ```
+4. If you want to use the install script from our repository:
   * Use the following command to download the script:  
   ```bash
     wget -O install.sh https://github.com/carpe-noctem-cassel/telegram-client/raw/master/install.sh
@@ -28,41 +34,49 @@ https://github.com/reo7sp/tgbot-cpp.git
   ```bash
     ./install.sh
   ```
-4. If you can not setup the project using a script or if the script does not work proceed with the next step.
+5. If you can not setup the project using a script or if the script does not work proceed with the next step.
    If the script did not crash you are done.
-5. Install the dependencies for the telegram api:  
+6. Install the dependencies for the telegram api:  
 ```bash
-    sudo apt install g++ make binutils cmake libssl-dev libboost-system-dev
+    sudo apt install g++ make binutils cmake libssl-dev libboost-system-dev capnproto libcapnp-dev
 ```
-6. clone the telegram bot api using following command:
+7. clone the telegram bot api using following command:
 ```bash
     git clone https://github.com/reo7sp/tgbot-cpp.git
 ```
-7. Enter the repository:
+8. Enter the repository:
 ```bash
     cd tgbot-cpp
 ```
-8. run Cmake with:  
+9. run Cmake with:  
 ```bash
     cmake .
 ```
-9. build the api using:  
+10. build the api using:  
 ```bash
     make
 ```
-10. Install the api using:  
+11. Install the api using:  
 ```bash
     sudo make install
 ```
-11. leave the directory:  
+12. leave the directory:  
 ```bash
     cd ..
 ```
-12. clone our repository:  
+13. clone our repository:  
 ```bash
     git clone https://github.com/carpe-noctem-cassel/telegram-client.git
 ```
-14. Installing the official Telegram client:  
+14. Download and install the gpg key for the package-source of zeromq:  
+```bash
+    wget https://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_18.04/Release.key -O- | sudo apt-key add
+```
+15. Install zeromq:
+```bash
+    sudo apt install libzmq3-dev
+```
+16. Installing the official Telegram client:  
     * Make shure that you are in your workspace and change to the directory of the telegram-client repository.  
 ```bash
     cd telegram-client  
@@ -71,8 +85,8 @@ https://github.com/reo7sp/tgbot-cpp.git
 ```bash
     sudo ./telegram-desktop-setup.sh  
 ```
-15. Change the ownership of the executable of the telegram client.
+17. Change the ownership of the executable of the telegram client.
 ```bash
     sudo chown <username> /usr/local/bin/telegram
 ```
-16. more steps to come...
+18. more steps to come...
