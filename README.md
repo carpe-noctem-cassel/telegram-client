@@ -8,7 +8,7 @@ https://github.com/reo7sp/tgbot-cpp.git
 The documentation of zeromq:  
 http://zguide.zeromq.org/page:all  
 The capnproto documentation:  
-http://capnproto.github.io/pycapnp/  
+https://capnproto.org/   
 
 ## Installation
 1. Create directory for your workspace
