@@ -5,6 +5,8 @@ This project is supposed to build a telegram bot to allow natural language commu
 ## Dependencies
 The repository depends on the Telegram bot api from reo7sp:  
 https://github.com/reo7sp/tgbot-cpp.git
+The documentation of zeromq:
+http://zguide.zeromq.org/page:all
 
 ## Installation
 1. Create directory for your workspace
