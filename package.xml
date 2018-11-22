@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>telegram-client</name>
+  <version>0.0.0</version>
+  <description>The telegram-client package</description>
+
+  <maintainer email="lab-user@todo.todo">Stefan Schmelz</maintainer>
+
+  <license>GPLv3</license>
+
+  <author email="jane.doe@example.com">Stefan Schmelz</author>
+
+  <depend>roscpp</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

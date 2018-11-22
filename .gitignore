@@ -33,3 +33,7 @@
 
 # vim tmp files
 *.swp
+
+# clion stuff
+**/cmake-build-debug/
+**/.idea/
