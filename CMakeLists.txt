@@ -1,15 +1,23 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(telegram_client)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+include_directories(include)
+
+## requried source for all targets
+set(DEFAULT_SRC_LIST
+        src/Robot.cpp
+        src/User.cpp)
 
 # libs
 ## threads
 find_package(Threads REQUIRED)
-
 ## openssl
 find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
+## boost
+find_package(Boost COMPONENTS system REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
 
 ## curl
 find_package(CURL)
@@ -18,43 +26,30 @@ if (CURL_FOUND)
     add_definitions(-DHAVE_CURL)
 endif()
 
-## boost
-set(Boost_USE_MULTITHREADED ON)
-if (ENABLE_TESTS)
-    find_package(Boost 1.59.0 COMPONENTS system unit_test_framework REQUIRED)
-else()
-    find_package(Boost 1.59.0 COMPONENTS system REQUIRED)
-endif()
-include_directories(${Boost_INCLUDE_DIR})
-
-set(LIB_LIST
-        #${CMAKE_THREAD_LIBS_INIT}
+## required libraries for all targets
+set(DEFAULT_LIB_LIST
+        TgBot
+        ${CMAKE_THREAD_LIBS_INIT}
         ${OPENSSL_LIBRARIES}
         ${Boost_LIBRARIES}
         ${CURL_LIBRARIES}
         )
 
 
-
-message("libraries: ${LIB_LIST}")
-
-include_directories(include)
-
 add_executable(telegram-bridge
-        include/Robot.h
-        include/User.h
-        src/Robot.cpp
         src/telegram-bridge.cpp
-        src/User.cpp)
-
-add_executable(client
-        include/Robot.h
-        include/User.h
-        src/client.cpp
-        src/Robot.cpp
-        src/User.cpp)
+        ${DEFAULT_SRC_LIST})
 
 target_link_libraries(
-        client
-        ${LIB_LIST}
-        TgBot)
+        telegram-bridge
+        ${DEFAULT_LIB_LIST}
+)
+
+# add_executable(client
+#         src/client.cpp
+#         ${DEFAULT_SRC_LIST})
+#
+# target_link_libraries(
+#         client
+#         ${DEFAULT_LIB_LIST}
+#         )
