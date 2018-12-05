@@ -12,14 +12,16 @@ if (CURL_FOUND)
     add_definitions(-DHAVE_CURL)
 endif()
 
-find_package(catkin REQUIRED)
+find_package(catkin QUIET)
+if(catkin_FOUND)
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES telegram-client
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
-)
+    catkin_package(
+      INCLUDE_DIRS include
+      LIBRARIES telegram-client
+      CATKIN_DEPENDS capnzero
+    #  DEPENDS system_lib
+    )
+endif(catkin_FOUND)
 
 include_directories(include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
 

@@ -12,7 +12,6 @@ class Robot
 
 		// Setters:
 		void setRobotName(std::string name);
-		void setRecivingStatus(bool value);
 
 		// Getters:
 		std::string getChatBotName();
@@ -34,7 +33,7 @@ class Robot
 		// Misc
 		void addCommand(std::string text);
 		void removeCommand(std::string text);
-		void reciveMessages();
+		void receiveMessages();
 		void setupTelegram();
 
 
@@ -44,8 +43,7 @@ class Robot
 
 	private:
 		int userId;
-		bool reciving;
-		bool killable;
+		bool running;
 		std::string apiKey;
 		std::string chatBotName;
 		std::string robotName;

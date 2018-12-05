@@ -37,3 +37,11 @@
 # clion stuff
 **/cmake-build-debug/
 **/.idea/
+
+# capnproto stuff
+*.capnp.h
+*.capnp.cpp
+
+# configuration files
+**/config/
+

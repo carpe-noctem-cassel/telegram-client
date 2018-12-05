@@ -13,7 +13,6 @@ Robot::Robot(std::string key, std::string rName)
 {
 	std::cout << "Creating a new Robot.\n";
 	this->apiKey = key;
-	this->reciving = false;
 	this->setRobotName(rName);
 }
 
@@ -23,11 +22,6 @@ Robot::Robot(std::string key, std::string rName)
 void Robot::setRobotName(std::string name)
 {
 	this->robotName = name;
-}
-
-void Robot::setRecivingStatus(bool value)
-{
-	this->reciving = value;
 }
 
 // =========================================================
@@ -53,7 +47,7 @@ std::string Robot::getBotInfoString()
 
 bool Robot::getRecivingStatus()
 {
-	return this->reciving;
+	return this->running;
 }
 
 int Robot::getOwnUserId()
@@ -186,25 +180,23 @@ void Robot::setupTelegram()
 	}
 }
 
-void Robot::reciveMessages()
+void Robot::receiveMessages()
 {
 	std::cout << "reciveMessage was called.\n";
-	if(this->reciving)
-	{
+
 		try
 		{
 			TgBot::TgLongPoll longPoll(*(this->bot));
-			while(this->reciving)
+			while(this->running)
 			{
 				longPoll.start();
-				this->killable = true;
 			}
 		}
 		catch(TgBot::TgException &e)
 		{
 			std::cout << e.what();
 		}
-	}
+
 }
 
 // ========================================================================
@@ -221,12 +213,12 @@ void Robot::commandEvent(TgBot::Message::Ptr message)
 	else if(message->text == "/quit")
 	{
 		std::cout << "recived quit\n";
-		if(this->killable)
+		if(this->running)
 		{
 			//this->setRecivingStatus(false);
 			this->bot->getApi().sendMessage(message->chat->id, "Bye!");
 		}
-		this->killable = false;
+		this->running = false;
 
 	}
 }
