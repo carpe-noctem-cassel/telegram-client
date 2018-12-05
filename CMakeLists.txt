@@ -12,8 +12,12 @@ if (CURL_FOUND)
     add_definitions(-DHAVE_CURL)
 endif()
 
+find_package(CapnProto)
 find_package(catkin QUIET)
 if(catkin_FOUND)
+
+    # this line does not work right now...
+    # find_package(catkin REQUIRED COMPONENTS capnzero)
 
     catkin_package(
       INCLUDE_DIRS include
@@ -21,6 +25,8 @@ if(catkin_FOUND)
       CATKIN_DEPENDS capnzero
     #  DEPENDS system_lib
     )
+else (catkin_FOUND)
+    set(catkin_LIBRARIES "event_handling discovery_msgs capnzero")
 endif(catkin_FOUND)
 
 include_directories(include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
@@ -47,6 +53,7 @@ add_executable(telegram-bridge
 
 target_link_libraries(
   telegram-bridge
+  tgbridge_basic_messages
   ${DEFAULT_LIB_LIST}
 )
 
@@ -58,3 +65,24 @@ target_link_libraries(
 #         client
 #         ${DEFAULT_LIB_LIST}
 #         )
+
+################  TELEGRAM MESSAGES
+## Autogenerate the c++ capnproto files
+set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
+file(GLOB_RECURSE capnp_messages ${capnp_message_folder} *.capnp)
+
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/tgbridge_basic_messages")
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/tgbridge_basic_messages")
+endif()
+
+set(CAPNPC_SRC_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/msg)
+set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/tgbridge_basic_messages")
+capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
+add_library(tgbridge_basic_messages ${CAPNP_SRCS})
+
+message("CAPNP_SRCS: ${CAPNP_SRCS}")
+message("CAPNP_HDRS: ${CAPNP_HDRS}")
+
+if (NOT catkin_FOUND)
+    target_include_directories(echo PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+endif (NOT catkin_FOUND)
