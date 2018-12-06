@@ -202,6 +202,6 @@ kj::Array<capnp::word>* Message::toCapnp()
     message.setMessageId((int32_t) this->getMessageId());
 //    std::cout << "pub: Message to send: " << message.toString().flatten().cStr() << std::endl;
     kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(message);
-    kj::Array<capnp::word>* wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray));
+    auto wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray));
     return wordArrayPtr;
 }
