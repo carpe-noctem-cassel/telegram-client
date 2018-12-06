@@ -12,16 +12,27 @@ if (CURL_FOUND)
     add_definitions(-DHAVE_CURL)
 endif()
 
-find_package(catkin REQUIRED)
+#add_definitions(-DZMQ_BUILD_DRAFT_API=1)
+find_package(ZeroMQ)
+find_package(catkin REQUIRED capnzero)
+
+# Introduce CapnProto
+find_package(CapnProto REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES telegram-client
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+  CATKIN_DEPENDS capnzero
+  DEPENDS ZeroMQ CapnProto
 )
 
-include_directories(include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
+include_directories(include
+        ${OPENSSL_INCLUDE_DIR}
+        ${Boost_INCLUDE_DIR}
+        ${catkin_INCLUDE_DIRS}
+        ${CAPNP_INCLUDE_DIRS}
+        ${ZeroMQ_INCLUDE_DIRS}
+)
 
 ## requried source for all targets
 set(DEFAULT_SRC_LIST
@@ -36,6 +47,9 @@ set(DEFAULT_LIB_LIST
   ${OPENSSL_LIBRARIES}
   ${Boost_LIBRARIES}
   ${CURL_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${CAPNP_LIBRARIES}
+  ${ZeroMQ_LIBRARIES}
 )
 
 add_executable(telegram-bridge

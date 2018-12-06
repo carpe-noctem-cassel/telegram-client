@@ -1,20 +1,30 @@
 #include "Robot.h"
+
+#include <capnp/common.h>
+#include <capnp/message.h>
+#include <capnp/serialize-packed.h>
+#include <kj/array.h>
+
+#include <capnzero-base-msgs/string.capnp.h>
 #include <iostream>
 
 // =========================================================
-// Constructors:
-
-Robot::Robot(std::string key)
-{
-	//this->Robot(key, "");
-}
-
+// Constructors/Destructor:
 Robot::Robot(std::string key, std::string rName)
 {
 	std::cout << "Creating a new Robot.\n";
 	this->apiKey = key;
 	this->reciving = false;
 	this->setRobotName(rName);
+	this->context = zmq_ctx_new();
+	this->czPub = new capnzero::Publisher(context, "voice");
+	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
+}
+
+Robot::~Robot(){
+	// clean up capnzero stuff
+	delete this->czPub;
+	zmq_ctx_term(this->context);
 }
 
 // ==========================================================
@@ -51,7 +61,7 @@ std::string Robot::getBotInfoString()
 	return result;
 }
 
-bool Robot::getRecivingStatus()
+bool Robot::getReceivingStatus()
 {
 	return this->reciving;
 }
@@ -186,7 +196,7 @@ void Robot::setupTelegram()
 	}
 }
 
-void Robot::reciveMessages()
+void Robot::receiveMessages()
 {
 	std::cout << "reciveMessage was called.\n";
 	if(this->reciving)
@@ -247,4 +257,11 @@ void Robot::messageEvent(TgBot::Message::Ptr message)
 		bool process = this->checkAuthentification(message->text, message->from->id);
 	}
 	std::cout.flush();
+
+	// build message
+	::capnp::MallocMessageBuilder msgBuilder;
+	capnzero::String::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero::String>();
+	beaconMsgBuilder.setString(message->text);
+	// send
+	this->czPub->send(msgBuilder);
 }
