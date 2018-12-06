@@ -46,6 +46,17 @@ set(DEFAULT_LIB_LIST
   ${CURL_LIBRARIES}
 )
 
+add_library(
+    message_wrap
+    src/Message.cpp
+    include/Message.h
+    ${CapnProto}
+)
+target_link_libraries(
+    message_wrap
+    ${CAPNP_LIBRARIES}
+)
+
 add_executable(telegram-bridge
   src/TelegramBridge.cpp
   ${DEFAULT_SRC_LIST}
@@ -53,9 +64,14 @@ add_executable(telegram-bridge
 
 target_link_libraries(
   telegram-bridge
-  tgbridge_basic_messages
-  ${DEFAULT_LIB_LIST}
+    message_wrap
+    tgbridge_basic_messages
+    ${DEFAULT_LIB_LIST}
 )
+
+if (NOT catkin_FOUND)
+    target_include_directories(telegram-bridge PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+endif()
 
 # add_executable(client
 #         src/client.cpp
@@ -84,5 +100,5 @@ message("CAPNP_SRCS: ${CAPNP_SRCS}")
 message("CAPNP_HDRS: ${CAPNP_HDRS}")
 
 if (NOT catkin_FOUND)
-    target_include_directories(echo PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    target_include_directories(tgbridge_basic_messages PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endif (NOT catkin_FOUND)
