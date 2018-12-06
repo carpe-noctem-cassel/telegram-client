@@ -1,14 +1,18 @@
 #pragma once
+
+#include "User.h"
+
+#include <capnzero/Publisher.h>
 #include <tgbot/tgbot.h>
+
 #include <string>
 #include <vector>
-#include "User.h"
 
 class Robot
 {
 	public:
-		Robot(std::string key);
 		Robot(std::string key, std::string rName);
+		~Robot();
 
 		// Setters:
 		void setRobotName(std::string name);
@@ -17,7 +21,7 @@ class Robot
 		std::string getChatBotName();
 		std::string getRobotName();
 		std::string getBotInfoString();
-		bool getRecivingStatus();
+		bool getReceivingStatus();
 		int getOwnUserId();
 		unsigned int getUserCount();
 
@@ -50,6 +54,10 @@ class Robot
 		std::vector <std::string> commands;
 		std::vector <User> users;
 		TgBot::Bot *bot;
+		// capnzerostuff
+		void* context;
+		capnzero::Publisher* czPub;
+
 
 		// Private methods:
 		unsigned int getUserIndexById(int id);
