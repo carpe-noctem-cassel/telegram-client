@@ -10,7 +10,6 @@
 
   <author email="stefan_schmelz@gmx.net">Stefan Schmelz</author>
 
-  <depend>roscpp</depend>
   <depend>capnzero</depend>
   <buildtool_depend>catkin</buildtool_depend>
 

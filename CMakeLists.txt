@@ -3,102 +3,85 @@ project(telegram-client)
 
 add_compile_options(-std=c++11)
 
+## FIND THIRD PARTY LIBRARIES
+
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
+find_package(CapnProto REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system )
-find_package(CURL)
-if (CURL_FOUND)
-    include_directories(${CURL_INCLUDE_DIRS})
-    add_definitions(-DHAVE_CURL)
-endif()
+#find_package(CURL)
+#if (CURL_FOUND)
+#    include_directories(${CURL_INCLUDE_DIRS})
+#    add_definitions(-DHAVE_CURL)
+#endif()
 
-find_package(CapnProto)
+## ZMQ
+find_package(PkgConfig)
+pkg_check_modules(PC_ZeroMQ QUIET zmq)
+find_path(ZeroMQ_INCLUDE_DIR
+  NAMES zmq.hpp
+  PATHS ${PC_ZeroMQ_INCLUDE_DIRS}
+)
+find_library(ZeroMQ_LIBRARY
+  NAMES zmq
+  PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
+)
+
+
+## ROS OPTIONAL
 find_package(catkin QUIET)
 if(catkin_FOUND)
+  find_package(catkin REQUIRED COMPONENTS capnzero)
 
-    # this line does not work right now...
-    # find_package(catkin REQUIRED COMPONENTS capnzero)
-
-    catkin_package(
-      INCLUDE_DIRS include
-      LIBRARIES telegram-client
-      CATKIN_DEPENDS capnzero
-    #  DEPENDS system_lib
-    )
+  catkin_package(
+    INCLUDE_DIRS include
+    LIBRARIES telegram-bridge telegram-msgs
+    CATKIN_DEPENDS capnzero
+  #  DEPENDS system_lib
+  )
 else (catkin_FOUND)
-    set(catkin_LIBRARIES "event_handling discovery_msgs capnzero")
+  set(catkin_LIBRARIES "capnzero")
 endif(catkin_FOUND)
 
-include_directories(include ${OPENSSL_INCLUDE_DIR} ${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS})
+include_directories(include
+  ${OPENSSL_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIR}
+  ${catkin_INCLUDE_DIRS}
+  ${ZeroMQ_INCLUDE_DIRS}
+  ${CAPNP_INCLUDE_DIRS}
+)
 
-## requried source for all targets
-set(DEFAULT_SRC_LIST
+## TELEGRAM-BRIDGE
+add_executable(telegram-bridge
+  src/TelegramBridge.cpp
+  src/Message.cpp
   src/Robot.cpp
   src/User.cpp
 )
-
-## required libraries for all targets
-set(DEFAULT_LIB_LIST
+target_link_libraries(telegram-bridge
+  telegram-msgs
   TgBot
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENSSL_LIBRARIES}
   ${Boost_LIBRARIES}
   ${CURL_LIBRARIES}
+  ${CAPNP_LIBRARIES}
+  ${catkin_LIBRARIES}
 )
-
-add_library(
-    message_wrap
-    src/Message.cpp
-    include/Message.h
-    ${CapnProto}
-)
-target_link_libraries(
-    message_wrap
-    ${CAPNP_LIBRARIES}
-)
-
-add_executable(telegram-bridge
-  src/TelegramBridge.cpp
-  ${DEFAULT_SRC_LIST}
-)
-
-target_link_libraries(
-  telegram-bridge
-    message_wrap
-    tgbridge_basic_messages
-    ${DEFAULT_LIB_LIST}
-)
-
 if (NOT catkin_FOUND)
-    target_include_directories(telegram-bridge PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+  target_include_directories(telegram-bridge PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endif()
 
-# add_executable(client
-#         src/client.cpp
-#         ${DEFAULT_SRC_LIST})
-#
-# target_link_libraries(
-#         client
-#         ${DEFAULT_LIB_LIST}
-#         )
-
-################  TELEGRAM MESSAGES
-## Autogenerate the c++ capnproto files
+## TELEGRAM-CAPNZERO-MESSAGE
 set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
 file(GLOB_RECURSE capnp_messages ${capnp_message_folder} *.capnp)
-
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/tgbridge_basic_messages")
-    file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/tgbridge_basic_messages")
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
 endif()
-
 set(CAPNPC_SRC_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/msg)
-set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/tgbridge_basic_messages")
+set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
 capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
-add_library(tgbridge_basic_messages ${CAPNP_SRCS})
-
-message("CAPNP_SRCS: ${CAPNP_SRCS}")
-message("CAPNP_HDRS: ${CAPNP_HDRS}")
-
+add_library(telegram-msgs ${CAPNP_SRCS})
 if (NOT catkin_FOUND)
-    target_include_directories(tgbridge_basic_messages PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+  target_include_directories(telegram-msgs PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endif (NOT catkin_FOUND)
