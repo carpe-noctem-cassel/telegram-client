@@ -1,12 +1,13 @@
 #include "Robot.h"
 #include "Message.h"
 
+#include <capnzero-base-msgs/string.capnp.h>
+
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
 #include <kj/array.h>
 
-#include <capnzero-base-msgs/string.capnp.h>
 #include <iostream>
 
 // =========================================================
@@ -254,11 +255,10 @@ void Robot::messageEvent(TgBot::Message::Ptr message)
 //	std::cout.flush();
 
 	// build message
-	::capnp::MallocMessageBuilder msgBuilder;
 	Message m(message);
 
-//	capnzero::String::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero::String>();
-//	beaconMsgBuilder.setString(message->text);
 	// send
+    ::capnp::MallocMessageBuilder msgBuilder;
+    m.toCapnp(msgBuilder);
 	this->czPub->send(msgBuilder);
 }

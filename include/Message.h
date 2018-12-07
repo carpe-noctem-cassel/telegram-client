@@ -1,8 +1,12 @@
-#include "tgbridge_basic_messages/message.capnp.h"
-#include <string>
+#pragma once
+
+#include "telegram_msgs/message.capnp.h"
+
 #include <tgbot/tgbot.h>
 #include <kj/array.h>
 #include <capnp/message.h>
+
+#include <string>
 
 // Different message types, so we can pull different data from this structure depending on what message should be sent.
 // The telegram api has no means to send a prefilled message structure, so we have to construct the messages in our bot thread.
@@ -44,8 +48,7 @@ public:
 
     // Misc:
     void fromCapnp(void* msg, size_t size);
-    kj::Array<capnp::word>* toCapnpArray();
-    void buildCapnp(::capnp::MallocMessageBuilder &msgBuilder);
+    void toCapnp(::capnp::MallocMessageBuilder &msgBuilder);
 
 private:
     MsgType type;             // The type of the message needed to get the right data while sending.
