@@ -76,7 +76,7 @@ void Message::setMessageId(long int id)
     this->messageId = id;
 }
 
-void Message::setTimestamp(int time)
+void Message::setTimestamp(unsigned int time)
 {
     this->timestamp = time;
 }
@@ -150,7 +150,7 @@ std::string Message::getUserName()
 
 
 // Misc:
-void Message::fromCapnp(void *msg, int size)
+void Message::fromCapnp(void *msg, size_t size)
 {
     auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(msg), size);
     ::capnp::FlatArrayMessageReader message = ::capnp::FlatArrayMessageReader(wordArray);
@@ -165,9 +165,8 @@ void Message::fromCapnp(void *msg, int size)
     this->setUserName(msgReader.getUserName());
 }
 
-kj::Array<capnp::word>* Message::toCapnp()
+void Message::buildCapnp(::capnp::MallocMessageBuilder &msgBuilder)
 {
-    ::capnp::MallocMessageBuilder msgBuilder;
     msgs::Message::Builder message = msgBuilder.initRoot<msgs::Message>();
 
     if(!this->getLanguageCode().empty())
@@ -201,7 +200,13 @@ kj::Array<capnp::word>* Message::toCapnp()
     message.setUserId((int32_t) this->getUserId());
     message.setMessageId((int32_t) this->getMessageId());
 //    std::cout << "pub: Message to send: " << message.toString().flatten().cStr() << std::endl;
-    kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(message);
+}
+
+kj::Array<capnp::word>* Message::toCapnpArray()
+{
+    ::capnp::MallocMessageBuilder builder;
+    this->buildCapnp(builder);
+    kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(builder);
     auto wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray));
     return wordArrayPtr;
-}
+};

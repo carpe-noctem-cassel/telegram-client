@@ -2,6 +2,7 @@
 #include <string>
 #include <tgbot/tgbot.h>
 #include <kj/array.h>
+#include <capnp/message.h>
 
 // Different message types, so we can pull different data from this structure depending on what message should be sent.
 // The telegram api has no means to send a prefilled message structure, so we have to construct the messages in our bot thread.
@@ -42,8 +43,9 @@ public:
     // reading these things from a recived message on the other hand is fine.
 
     // Misc:
-    void fromCapnp(void* msg, int size);
-    kj::Array<capnp::word>* toCapnp();
+    void fromCapnp(void* msg, size_t size);
+    kj::Array<capnp::word>* toCapnpArray();
+    void buildCapnp(::capnp::MallocMessageBuilder &msgBuilder);
 
 private:
     MsgType type;             // The type of the message needed to get the right data while sending.
@@ -60,7 +62,7 @@ private:
     // Private setters for values that should not be settable from the outside:
     void setLanguageCode(std::string lang);
     void setMessageId(long int id);
-    void setTimestamp(int time);
+    void setTimestamp(unsigned int time);
     void setUserName(std::string name);
     void setFirstName(std::string name);
     void setLastName(std::string name);
