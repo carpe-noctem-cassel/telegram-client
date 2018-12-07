@@ -40,7 +40,7 @@ if(catkin_FOUND)
   #  DEPENDS system_lib
   )
 else (catkin_FOUND)
-  set(catkin_LIBRARIES "capnzero")
+  set(catkin_LIBRARIES capnzero)
 endif(catkin_FOUND)
 
 include_directories(include

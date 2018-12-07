@@ -42,6 +42,6 @@
 *.capnp.h
 *.capnp.cpp
 
-# configuration files
-**/config/
+# api key
+*.key
 

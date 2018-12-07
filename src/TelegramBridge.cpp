@@ -2,9 +2,11 @@
 #include "Robot.h"
 #include <zmq.hpp>
 #include "Message.h"
+#include <fstream>
 
 int main(int argc, char *argv[])
 {
+    // Only for testing purposes
 	Message m;
 	m.setType(MsgType::message);
 	m.setText("test");
@@ -13,7 +15,11 @@ int main(int argc, char *argv[])
     ::capnp::MallocMessageBuilder msgBuilder;
     m.toCapnp(msgBuilder);
 
-	Robot r("603132548:AAH9RAl4fTiwi2-uxH-YJnzJlEqzC9rgjG8", "Pinky");
+    std::ifstream input("telegram.key", std::ifstream::in);
+    std::string key;
+    input >> key
+
+	Robot r(key, "Pinky");
 	r.setupTelegram();
     r.receiveMessages();
 	return 0;
