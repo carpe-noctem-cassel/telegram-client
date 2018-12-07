@@ -125,4 +125,7 @@ cd <wokspace>/
 ```bash
 catkin build
 ```
+25. To run the bot you have to ge an api key first. The key is not inside the repository for obvieous reasons.
+    Add a file called telegram.key and paste the api key into the file. If you dont have a key,you could optain it by texting the botfather bot. [Here is the Botfather](https://telegram.me/botfather)
+
 25. more steps to come...
