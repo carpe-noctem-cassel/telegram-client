@@ -8,7 +8,7 @@
 
   <license>GPLv3</license>
 
-  <author email="jane.doe@example.com">Stefan Schmelz</author>
+  <author email="stefan_schmelz@gmx.net">Stefan Schmelz</author>
 
   <depend>roscpp</depend>
   <depend>capnzero</depend>
