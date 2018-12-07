@@ -1,7 +1,3 @@
-//
-// Created by stefan on 06.12.18.
-//
-
 #include <Message.h>
 #include <tgbot/tgbot.h>
 #include <capnp/common.h>
@@ -154,7 +150,7 @@ void Message::fromCapnp(void *msg, int size)
 {
     auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(msg), size);
     ::capnp::FlatArrayMessageReader message = ::capnp::FlatArrayMessageReader(wordArray);
-    msgs::Message::Reader msgReader = message.getRoot<msgs::Message>();
+    telegram_msgs::Message::Reader msgReader = message.getRoot<telegram_msgs::Message>();
     this->setText(msgReader.getText());
     this->setType((MsgType) msgReader.getType());
     this->setUserId(msgReader.getUserId());
@@ -168,7 +164,7 @@ void Message::fromCapnp(void *msg, int size)
 kj::Array<capnp::word>* Message::toCapnp()
 {
     ::capnp::MallocMessageBuilder msgBuilder;
-    msgs::Message::Builder message = msgBuilder.initRoot<msgs::Message>();
+    telegram_msgs::Message::Builder message = msgBuilder.initRoot<telegram_msgs::Message>();
 
     if(!this->getLanguageCode().empty())
         message.setLanguageCode(this->getLanguageCode());
@@ -201,7 +197,7 @@ kj::Array<capnp::word>* Message::toCapnp()
     message.setUserId((int32_t) this->getUserId());
     message.setMessageId((int32_t) this->getMessageId());
 //    std::cout << "pub: Message to send: " << message.toString().flatten().cStr() << std::endl;
-    kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(message);
+    kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(msgBuilder);
     auto wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray));
     return wordArrayPtr;
 }

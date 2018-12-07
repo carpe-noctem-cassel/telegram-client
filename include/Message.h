@@ -1,7 +1,11 @@
-#include "tgbridge_basic_messages/message.capnp.h"
-#include <string>
+#pragma once
+
+#include "telegram_msgs/message.capnp.h"
+
 #include <tgbot/tgbot.h>
 #include <kj/array.h>
+
+#include <string>
 
 // Different message types, so we can pull different data from this structure depending on what message should be sent.
 // The telegram api has no means to send a prefilled message structure, so we have to construct the messages in our bot thread.
