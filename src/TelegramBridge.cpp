@@ -4,6 +4,9 @@
 #include "Message.h"
 #include <fstream>
 
+#include <unistd.h>
+#include <sys/types.h>
+
 int main(int argc, char *argv[])
 {
     // Only for testing purposes
@@ -15,9 +18,11 @@ int main(int argc, char *argv[])
     ::capnp::MallocMessageBuilder msgBuilder;
     m.toCapnp(msgBuilder);
 
-    std::ifstream input("telegram.key", std::ifstream::in);
+    std::string path = std::getenv("HOME");
+
+    std::ifstream input(path + "/teamwork-ws/src/telegram-client/telegram.key", std::ifstream::in);
     std::string key;
-    input >> key
+    input >> key;
 
 	Robot r(key, "Pinky");
 	r.setupTelegram();
