@@ -19,7 +19,8 @@ Robot::Robot(std::string key, std::string rName)
 	this->setRobotName(rName);
 	this->context = zmq_ctx_new();
 	this->czPub = new capnzero::Publisher(context, "voice");
-	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
+//	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
+    this->czPub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
 }
 
 Robot::~Robot(){

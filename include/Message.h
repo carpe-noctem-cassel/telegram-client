@@ -7,6 +7,7 @@
 #include <capnp/message.h>
 
 #include <string>
+#include <capnp/serialize.h>
 
 // Different message types, so we can pull different data from this structure depending on what message should be sent.
 // The telegram api has no means to send a prefilled message structure, so we have to construct the messages in our bot thread.
@@ -47,7 +48,7 @@ public:
     // reading these things from a recived message on the other hand is fine.
 
     // Misc:
-    void fromCapnp(void* msg, size_t size);
+    void fromCapnp(::capnp::FlatArrayMessageReader& reader);
     void toCapnp(::capnp::MallocMessageBuilder &msgBuilder);
 
 private:
