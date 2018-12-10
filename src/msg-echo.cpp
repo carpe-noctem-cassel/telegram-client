@@ -9,6 +9,7 @@
 
 #include <signal.h>
 #include <thread>
+#include <ctime>
 
 
 // This file mirrors the design of capnzeros echo!
@@ -20,7 +21,7 @@ void callback(::capnp::FlatArrayMessageReader& reader)
 //    std::cout << "Called callback..." << std::endl;
     Message m;
     m.fromCapnp(reader);
-    std::cout << "\033[31;1m" << m.getUserName() << '(' << m.getUserId() << ")\033[0m in chat " << m.getChatId() << " wrote at ";
+    std::cout << "\033[31;1m" << m.getUserName() << '(' << m.getUserId() << ")(" << m.getChatId() << ")\033[0m at ";
     std::cout << m.getTimestamp() << ": " << m.getText() << std::endl;
 //    std::cout << reader.getRoot<telegram_msgs::Message>().toString().flatten().cStr() << std::endl;
 }
@@ -50,9 +51,9 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    for (size_t i = 0; i < argc; i++) {
-        std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
-    }
+//    for (size_t i = 0; i < argc; i++) {
+//        std::cout << "Param " << i << ": '" << argv[i] << "'" << std::endl;
+//    }
 
     void* ctx = zmq_ctx_new();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);

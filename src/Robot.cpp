@@ -239,21 +239,21 @@ void Robot::commandEvent(TgBot::Message::Ptr message)
 void Robot::messageEvent(TgBot::Message::Ptr message)
 {
 	//std::cout << "MessageEvent Called!\n";
-	std::cout << "User " << message->from->username << " with id " << message->from->id << " sent: " << message->text << std::endl;
-
-	// This block was only for testing purposes and will be removed soon.
-	this->bot->getApi().sendMessage(message->chat->id, "Your Message was: " + message->text);
-	if(this->appendUser(message->from->languageCode, message->from->username, "", message->from->id))
-	{
-		std::cout << "Unknown user detected!\n";
-		//this->bot->getApi().sendMessage(message->from->id, "How is your name?");
-	}
-	else
-	{
-		std::cout << "Known User detected!\n";
-		bool process = this->checkAuthentification(message->text, message->from->id);
-	}
-	std::cout.flush();
+//	std::cout << "User " << message->from->username << " with id " << message->from->id << " sent: " << message->text << std::endl;
+//
+//	// This block was only for testing purposes and will be removed soon.
+//	this->bot->getApi().sendMessage(message->chat->id, "Your Message was: " + message->text);
+//	if(this->appendUser(message->from->languageCode, message->from->username, "", message->from->id))
+//	{
+//		std::cout << "Unknown user detected!\n";
+//		//this->bot->getApi().sendMessage(message->from->id, "How is your name?");
+//	}
+//	else
+//	{
+//		std::cout << "Known User detected!\n";
+//		bool process = this->checkAuthentification(message->text, message->from->id);
+//	}
+//	std::cout.flush();
 
 	// build message
 	Message m(message);
