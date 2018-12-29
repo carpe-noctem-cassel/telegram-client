@@ -128,6 +128,7 @@ catkin build
 25. more steps to come...
 
 ## Parts of the project  
+The following table contains a temprary list of sensible parts of our project and some rough steps that could help creating the parts listed. This list will be subject to change!
 | Name      | Description | Tasks |
 | --------- | ----------- | ----- |
 | tg_bridge | The connection between Telegram and the robots system. This part is supposed to forward messaged recived from telegram to tha robot and forward messages from the robot to Telegram. |<ul><li>[x] Communicate with Telegram. </li><li>[x] Send Messages form Telegram To Robot. </li><li>[x] Create Message data structure and wrap capnproto message with it. </li><li>[x] Create Listener to echo messages for debugging. </li><li>[x] Create dispatcher to send messages to Telegram.</li><li>[x] Send Messsages from Robot to Telegram </li><li>[ ] Combine sending and reciving with threads.</li><li>[ ] Create dummy bridge for debugging work.</li></ul> |
