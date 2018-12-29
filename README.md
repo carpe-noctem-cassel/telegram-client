@@ -129,3 +129,8 @@ catkin build
     Add a file called telegram.key and paste the api key into the file. If you dont have a key,you could optain it by texting the botfather bot. [Here is the Botfather](https://telegram.me/botfather)
 
 25. more steps to come...
+
+## Parts of the project  
+| Name      | Description | Tasks |
+| --------- | ----------- | ----- |
+| tg_bridge | The connection between Telegram and the robots system. This part is supposed to forward messaged recived from telegram to tha robot and forward messages from the robot to Telegram. |  |
