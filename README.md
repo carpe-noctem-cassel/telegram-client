@@ -126,3 +126,8 @@ cd <wokspace>/
 catkin build
 ```
 25. more steps to come...
+
+## Parts of the project  
+| Name      | Description | Tasks |
+| --------- | ----------- | ----- |
+| tg_bridge | The connection between Telegram and the robots system. This part is supposed to forward messaged recived from telegram to tha robot and forward messages from the robot to Telegram. | [X] Communicate with Telegram  [X] Send Messages form Telegram To Robot.  [x] Create Message data structure and wrap capnproto message with it.  [X] Create Listener to echo messages for debugging.  [X] Create dispatcher to send messages to Telegram. [X] Send Messsages from Robot to Telegram  [ ] Combine sending and reciving with threads. |
