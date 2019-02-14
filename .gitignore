@@ -44,4 +44,4 @@
 
 # configuration files
 **/config/
-
+*.key
