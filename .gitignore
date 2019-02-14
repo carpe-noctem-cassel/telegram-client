@@ -44,14 +44,4 @@
 
 # configuration files
 **/config/
-<<<<<<< Updated upstream
 *.key
-=======
-
-
-nlp/\.ipynb_checkpoints/spacy_test-checkpoint\.ipynb
-
-nlp/\.ipynb_checkpoints/receive_message_test-checkpoint\.ipynb
-
-nlp/\.ipynb_checkpoints/send_message-checkpoint\.ipynb
->>>>>>> Stashed changes
