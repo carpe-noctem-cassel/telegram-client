@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(telegram-client)
 
 add_compile_options(-std=c++11)
-
+add_definitions(-DZMQ_BUILD_DRAFT_API=1)
 ## FIND THIRD PARTY LIBRARIES
 
 find_package(Threads REQUIRED)
