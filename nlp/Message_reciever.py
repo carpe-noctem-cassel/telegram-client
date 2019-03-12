@@ -4,10 +4,12 @@ import sys
 import spacy
 import os
 from pathlib import Path
+
 mypath = Path(os.getcwd()).joinpath("../msg").absolute()
 sys.path.append(str(mypath))
 import capnp
 import message_capnp
+import spacy
 
 
 rcv_topic = ""
@@ -19,6 +21,9 @@ socket_down.connect("tcp://127.0.0.1:5555")
 # socket_down.bind("ipc:///@capnzero.ipc")
 socket_down.setsockopt_string(zmq.SUBSCRIBE, rcv_topic)
 
+# nlp initializations
+nlp = spacy.load('de')
+
 while True:
     print("Recieving . . .")
     message = socket_down.recv()
@@ -28,4 +33,14 @@ while True:
 
 
     print(msg.text)
+
+    # nlp stuff
+    new_string = ""
+    doc = nlp(msg.text)
+    for token in doc:
+        if token.pos_ == "NOUN":
+            new_string += token.text + " "
+
+    print(new_string)
+
     socket_up.send(message)
