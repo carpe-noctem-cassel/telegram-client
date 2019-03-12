@@ -8,18 +8,20 @@ sys.path.append(str(mypath))
 import capnp
 import message_capnp
 
-rcv_topic = "voice"
+rcv_topic = ""
 snd_topic = "msg_source"
 context = zmq.Context()
 socket_down = context.socket(zmq.SUB)
 socket_up = context.socket(zmq.PUB)
-socket_down.bind("tcp://127.0.0.1:5555")
-socket_down.setsockopt(zmq.SUBSCRIBE, rcv_topic.encode("ascii"))
-
+socket_down.connect("tcp://127.0.0.1:5555")
+# socket_down.bind("ipc:///@capnzero.ipc")
+socket_down.setsockopt_string(zmq.SUBSCRIBE, rcv_topic)
 
 while True:
-    topic, message = socket_down.recv()
+    print("Recieving . . .")
+    message = socket_down.recv()
+    # print(message)
     msg = message_capnp.Message.from_bytes(message)
+    print(msg)
     print(msg.text)
-    time.sleep(1)
-    socket_up.send_multipart([snd_topic.encode("ascii"), b"World"])
+    socket_up.send(message)

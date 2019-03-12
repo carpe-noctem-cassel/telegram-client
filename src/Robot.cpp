@@ -1,6 +1,7 @@
 #include "Robot.h"
 
 #include <capnzero-base-msgs/string.capnp.h>
+#include "Message.h"
 
 #include <capnp/common.h>
 #include <capnp/message.h>
@@ -18,7 +19,8 @@ Robot::Robot(std::string key, std::string rName)
 	this->setRobotName(rName);
 	this->context = zmq_ctx_new();
 	this->czPub = new capnzero::Publisher(context, "voice");
-	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
+//	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
+    this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
 }
 
 Robot::~Robot(){
@@ -189,6 +191,7 @@ void Robot::setupTelegram()
 	{
 		std::cerr << "Error: " << e.what();
 	}
+	this->running = true;
 }
 
 void Robot::receiveMessages()
@@ -236,13 +239,13 @@ void Robot::commandEvent(TgBot::Message::Ptr message)
 
 void Robot::messageEvent(TgBot::Message::Ptr message)
 {
-	//std::cout << "MessageEvent Called!\n";
+	std::cout << "MessageEvent Called!\n";
 	std::cout << "User " << message->from->username << " with id " << message->from->id << " sent: " << message->text << '\n';
 	this->bot->getApi().sendMessage(message->chat->id, "Your Message was: " + message->text);
 	if(this->appendUser(message->from->languageCode, message->from->username, "", message->from->id))
 	{
 		std::cout << "Unknown user detected!\n";
-		//this->bot->getApi().sendMessage(message->from->id, "How is your name?");
+//		this->bot->getApi().sendMessage(message->from->id, "How is your name?");
 	}
 	else
 	{
@@ -253,8 +256,10 @@ void Robot::messageEvent(TgBot::Message::Ptr message)
 
 	// build message
 	::capnp::MallocMessageBuilder msgBuilder;
-	capnzero::String::Builder beaconMsgBuilder = msgBuilder.initRoot<capnzero::String>();
-	beaconMsgBuilder.setString(message->text);
+	Message m(message);
+	m.toCapnp(msgBuilder);
+
+
 	// send
 	this->czPub->send(msgBuilder);
 }

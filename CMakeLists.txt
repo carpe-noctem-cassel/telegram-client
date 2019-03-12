@@ -72,6 +72,23 @@ if (NOT catkin_FOUND)
   target_include_directories(telegram-bridge PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endif()
 
+## MESSAGE ECHO
+add_executable(msgecho
+        src/msg-echo.cpp
+        src/Message.cpp
+        )
+
+target_link_libraries(msgecho
+        telegram-msgs
+        ${catkin_LIBRARIES}
+        ${CAPNP_LIBRARIES}
+        ${ZeroMQ_LIBRARIES}
+        ${Boost_LIBRARIES}
+        pthread
+        )
+target_compile_definitions(msgecho PUBLIC ZMQ_BUILD_DRAFT_API=1)
+
+
 ## TELEGRAM-CAPNZERO-MESSAGE
 set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
 file(GLOB_RECURSE capnp_messages ${capnp_message_folder} *.capnp)

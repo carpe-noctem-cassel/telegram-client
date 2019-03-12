@@ -7,7 +7,7 @@
 
 Message::Message()
 {
-
+    this->type = MsgType::message;
 }
 
 Message::Message(int chatId, int userId, std::string text)
@@ -72,7 +72,7 @@ void Message::setMessageId(long int id)
     this->messageId = id;
 }
 
-void Message::setTimestamp(int time)
+void Message::setTimestamp(unsigned int time)
 {
     this->timestamp = time;
 }
@@ -146,11 +146,9 @@ std::string Message::getUserName()
 
 
 // Misc:
-void Message::fromCapnp(void *msg, int size)
+void Message::fromCapnp(::capnp::FlatArrayMessageReader& reader)
 {
-    auto wordArray = kj::ArrayPtr<capnp::word const>(reinterpret_cast<capnp::word const*>(msg), size);
-    ::capnp::FlatArrayMessageReader message = ::capnp::FlatArrayMessageReader(wordArray);
-    telegram_msgs::Message::Reader msgReader = message.getRoot<telegram_msgs::Message>();
+    telegram_msgs::Message::Reader msgReader = reader.getRoot<telegram_msgs::Message>();
     this->setText(msgReader.getText());
     this->setType((MsgType) msgReader.getType());
     this->setUserId(msgReader.getUserId());
@@ -159,11 +157,11 @@ void Message::fromCapnp(void *msg, int size)
     this->setFirstName(msgReader.getFirstName());
     this->setLastName(msgReader.getLastName());
     this->setUserName(msgReader.getUserName());
+    this->setTimestamp(msgReader.getTimestamp());
 }
 
-kj::Array<capnp::word>* Message::toCapnp()
+void Message::toCapnp(::capnp::MallocMessageBuilder &msgBuilder)
 {
-    ::capnp::MallocMessageBuilder msgBuilder;
     telegram_msgs::Message::Builder message = msgBuilder.initRoot<telegram_msgs::Message>();
 
     if(!this->getLanguageCode().empty())
@@ -197,7 +195,4 @@ kj::Array<capnp::word>* Message::toCapnp()
     message.setUserId((int32_t) this->getUserId());
     message.setMessageId((int32_t) this->getMessageId());
 //    std::cout << "pub: Message to send: " << message.toString().flatten().cStr() << std::endl;
-    kj::Array<capnp::word> wordArray = capnp::messageToFlatArray(msgBuilder);
-    auto wordArrayPtr = new kj::Array<capnp::word>(kj::mv(wordArray));
-    return wordArrayPtr;
 }
