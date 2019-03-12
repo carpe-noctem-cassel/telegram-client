@@ -1,12 +1,14 @@
 import time
 import zmq
 import sys
+import spacy
 import os
 from pathlib import Path
 mypath = Path(os.getcwd()).joinpath("../msg").absolute()
 sys.path.append(str(mypath))
 import capnp
 import message_capnp
+
 
 rcv_topic = ""
 snd_topic = "msg_source"
@@ -22,6 +24,8 @@ while True:
     message = socket_down.recv()
     # print(message)
     msg = message_capnp.Message.from_bytes(message)
-    print(msg)
+    # print(msg)
+
+
     print(msg.text)
     socket_up.send(message)
