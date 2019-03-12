@@ -1,7 +1,7 @@
 #include "Robot.h"
 #include "Message.h"
 
-#include <capnzero-base-msgs/string.capnp.h>
+//#include <capnzero-base-msgs/string.capnp.h>
 
 #include <capnp/common.h>
 #include <capnp/message.h>

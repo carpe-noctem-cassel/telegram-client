@@ -1,11 +1,11 @@
-#include <iostream>
-#include "Robot.h"
-#include <zmq.hpp>
-#include "Message.h"
 #include <fstream>
-
+#include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
+#include <zmq.hpp>
+#include "Robot.h"
+#include "Message.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
         std::cout << "API-key: " << key << '\n';
         Robot r(key, "Pinky", ctx);
         r.setupTelegram();
+        r.setupUpstream();
         r.receiveMessages();
         zmq_ctx_term(ctx);
     } else
