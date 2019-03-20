@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(telegram-client)
 
 add_compile_options(-std=c++11)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ## FIND THIRD PARTY LIBRARIES
 
@@ -54,13 +55,12 @@ include_directories(include
 ## TELEGRAM-BRIDGE
 add_executable(telegram-bridge
   src/TelegramBridge.cpp
-  src/Message.cpp
-  src/Robot.cpp
-  src/User.cpp
 )
 target_link_libraries(telegram-bridge
   telegram-msgs
   TgBot
+  robot
+  message
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENSSL_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -68,6 +68,9 @@ target_link_libraries(telegram-bridge
   ${CAPNP_LIBRARIES}
   ${catkin_LIBRARIES}
 )
+target_compile_definitions(telegram-bridge PUBLIC ZMQ_BUILD_DRAFT_API=1)
+
+
 if (NOT catkin_FOUND)
   target_include_directories(telegram-bridge PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 endif()
@@ -75,11 +78,11 @@ endif()
 ## MESSAGE ECHO
 add_executable(msgecho
         src/msg-echo.cpp
-        src/Message.cpp
         )
 
 target_link_libraries(msgecho
         telegram-msgs
+        message
         ${catkin_LIBRARIES}
         ${CAPNP_LIBRARIES}
         ${ZeroMQ_LIBRARIES}
@@ -88,6 +91,19 @@ target_link_libraries(msgecho
         )
 target_compile_definitions(msgecho PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
+add_library(robot src/Robot.cpp include/Robot.h)
+target_link_libraries(robot
+        TgBot
+        user
+        ${OPENSSL_LIBRARIES}
+        ${CAPNP_LIBRARIES}
+        ${ZeroMQ_LIBRARIES}
+        ${Boost_LIBRARIES})
+target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
+
+add_library(message src/Message.cpp include/Message.h)
+
+add_library(user src/User.cpp include/User.h)
 
 ## TELEGRAM-CAPNZERO-MESSAGE
 set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")

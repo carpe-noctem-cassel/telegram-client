@@ -1,7 +1,8 @@
 #include "Robot.h"
-
-#include <capnzero-base-msgs/string.capnp.h>
 #include "Message.h"
+#include "User.h"
+
+//#include <capnzero-base-msgs/string.capnp.h>
 
 #include <capnp/common.h>
 #include <capnp/message.h>
@@ -12,21 +13,26 @@
 
 // =========================================================
 // Constructors/Destructor:
-Robot::Robot(std::string key, std::string rName)
+Robot::Robot(std::string key, std::string rName, void* ctx)
 {
 	std::cout << "Creating a new Robot.\n";
 	this->apiKey = key;
 	this->setRobotName(rName);
-	this->context = zmq_ctx_new();
-	this->czPub = new capnzero::Publisher(context, "voice");
+	this->context = ctx;
+	this->topicDown = "downstream";
+	this->topicUp = "upstream";
+	this->czPub = new capnzero::Publisher(this->context, this->topicDown);
 //	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
-    this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
+    this->czPub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
+    this->czSub = new capnzero::Subscriber(this->context, this->topicUp);
+    this->czSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
 }
 
 Robot::~Robot(){
 	// clean up capnzero stuff
 	delete this->czPub;
-	zmq_ctx_term(this->context);
+	delete this->czSub;
+//	zmq_ctx_term(this->context);
 }
 
 // ==========================================================
@@ -40,32 +46,17 @@ void Robot::setRobotName(std::string name)
 // =========================================================
 // Getters:
 
-std::string Robot::getChatBotName()
-{
-	return this->chatBotName;
-}
-
-std::string Robot::getRobotName()
-{
-	return this->robotName;
-}
-
 std::string Robot::getBotInfoString()
 {
-	std::string result = "Telegram name: " + this->getChatBotName() + '\n';
-	result += "Running on the robot \"" + this->getRobotName() + "\"\n";
-	result += "Amount of known users: " + this->getUserCount() + '\n';
+	std::string result = "Telegram name: " + this->getBotName() + '\n';
+	result += "Running on the robot \"" + this->robotName + "\"\n";
+//	result += "Amount of known users: " + this->getUserCount() + '\n';
 	return result;
 }
 
-bool Robot::getReceivingStatus()
+std::string Robot::getBotName()
 {
-	return this->running;
-}
-
-int Robot::getOwnUserId()
-{
-	return this->userId;
+	return this->bot->getApi().getMe()->username;
 }
 
 unsigned int Robot::getUserCount()
@@ -75,46 +66,6 @@ unsigned int Robot::getUserCount()
 
 // ==========================================================
 // Manage human info:
-
-bool Robot::appendUser(std::string lang, std::string uName, std::string cName, int id)
-{
-	if(!isIdKnown(id))
-	{
-		this->users.push_back(User(lang, uName, id));
-		return true;
-	}
-	return false;
-}
-
-unsigned int Robot::getUserIndexById(int id)
-{
-	for(unsigned int i = 0; i < this->users.size(); ++i)
-	{
-		if(this->users[i].getUserId() == id)
-		{
-			return i;
-		}
-	}
-	return -1;
-}
-
-void Robot::updateCustomName(std::string cName, int id)
-{
-	int index = this->getUserIndexById(id);
-	this->users[index].setCustomName(cName);
-}
-
-void Robot::updateUserName(std::string uName, int id)
-{
-	int index = this->getUserIndexById(id);
-	this->users[index].setUserName(uName);
-}
-
-void Robot::updateLanguageCode(std::string lang, int id)
-{
-	int index = this->getUserIndexById(id);
-	this->users[index].setLanguageCode(lang);
-}
 
 bool Robot::isIdKnown(int id)
 {
@@ -128,81 +79,93 @@ bool Robot::isIdKnown(int id)
 	return false;
 }
 
-bool Robot::checkAuthentification(std::string reply, int id)
-{
-	if(!this->isUserAuthenticated(id))
-	{
-		std::cout << "User not authenticated.\n";
-		std::string request = this->users[this->getUserIndexById(id)].doAuthenticationStep(reply);
-		if(request != "")
-		{
-			std::cout << "Sending request: " << request << '\n';
-			this->bot->getApi().sendMessage(id, request);
-		}
-	}
-	else
-	{
-		std::cout << "User is authenticated.\n";
-	}
-	std::cout.flush();
-}
-
-bool Robot::isUserAuthenticated(int id)
-{
-	return this->users[this->getUserIndexById(id)].isUserAuthenticated();
-}
-
 // ==================================================================
 // Misc:
 
-void Robot::addCommand(std::string text)
-{
-	this->commands.push_back(text);
-}
-
-void Robot::removeCommand(std::string text)
-{
-	for(unsigned int i = 0; i < this->commands.size(); ++i)
-	{
-		if(this->commands[i] == text)
-		{
-			this->commands.erase(this->commands.begin() + i);
-			break;
-		}
-	}
-}
+//void Robot::addCommand(std::string text)
+//{
+//	this->commands.push_back(text);
+//}
+//
+//void Robot::removeCommand(std::string text)
+//{
+//	for(unsigned int i = 0; i < this->commands.size(); ++i)
+//	{
+//		if(this->commands[i] == text)
+//		{
+//			this->commands.erase(this->commands.begin() + i);
+//			break;
+//		}
+//	}
+//}
 
 void Robot::setupTelegram()
 {
 	std::cout << "setupTelegram was called.\n";
 	this->bot = new TgBot::Bot(this->apiKey);
+	std::cout << "Set start event.\n";
 	this->bot->getEvents().onCommand("start", [this](TgBot::Message::Ptr message){
 		this->commandEvent(message);
 	});
+	std::cout << "Set quit command.\n";
 	this->bot->getEvents().onCommand("quit", [this](TgBot::Message::Ptr message){
 		this->commandEvent(message);
 	});
-	this->bot->getEvents().onNonCommandMessage([this](TgBot::Message::Ptr message){this->messageEvent(message);});
+    try {
+        this->bot->getEvents().onNonCommandMessage([this](TgBot::Message::Ptr message){std::cout << "Recived Message\n"; this->messageEvent(message);});
+        std::cout << "Set messageEvent.\n";
+    }
+    catch (TgBot::TgException &e)
+    {
+        std::cerr << "Error: " << e.what();
+    }
 	try
 	{
 		this->chatBotName = this->bot->getApi().getMe()->username;
 	}
-	catch(TgBot::TgException &e)
-	{
-		std::cerr << "Error: " << e.what();
-	}
+	catch(TgBot::TgException &e) {
+        std::cerr << "Error: " << e.what();
+    }
+    std::cout << this->getBotInfoString();
 	this->running = true;
 }
 
 void Robot::receiveMessages()
 {
 	std::cout << "reciveMessage was called.\n";
-
+	int state = 0;
+	char animatedChar = ' ';
 		try
 		{
 			TgBot::TgLongPoll longPoll(*(this->bot));
+			std::cout << "Starting long poll loop\n";
 			while(this->running)
 			{
+//			    std::cout << "TEST" << std::endl;
+			    switch(state)
+			    {
+                    case 0:
+                        animatedChar = '-';
+                        ++state;
+                        break;
+                    case 1:
+                        animatedChar = '\\';
+                        ++state;
+                        break;
+                    case 2:
+                        animatedChar = '|';
+                        ++state;
+                        break;
+                    case 3:
+                        animatedChar = '/';
+                        state = 0;
+                        break;
+                    default:
+                        std::cerr << "Somthing wierd is going on!\n";
+			    }
+			    std::cout << "\033[30;48;5;51mBot Status: " << animatedChar <<
+			                 " Downstream Topic: " << this->topicDown << "\033[0m\r";
+			    std::cout.flush();
 				longPoll.start();
 			}
 		}
@@ -213,6 +176,11 @@ void Robot::receiveMessages()
 
 }
 
+void Robot::setupUpstream()
+{
+    this->czSub->subscribe(&Robot::dispatchMessage, &(*this));
+}
+
 // ========================================================================
 // Event handlers for Telegram
 
@@ -221,15 +189,13 @@ void Robot::commandEvent(TgBot::Message::Ptr message)
 	if(message->text == "/start")
 	{
 		std::cout << "recived Start\n";
-		//this->killable = true;
 		this->bot->getApi().sendMessage(message->chat->id, "Hi!");
 	}
 	else if(message->text == "/quit")
 	{
 		std::cout << "recived quit\n";
 		if(this->running)
-		{
-			//this->setRecivingStatus(false);
+        {
 			this->bot->getApi().sendMessage(message->chat->id, "Bye!");
 		}
 		this->running = false;
@@ -239,27 +205,35 @@ void Robot::commandEvent(TgBot::Message::Ptr message)
 
 void Robot::messageEvent(TgBot::Message::Ptr message)
 {
-	std::cout << "MessageEvent Called!\n";
-	std::cout << "User " << message->from->username << " with id " << message->from->id << " sent: " << message->text << '\n';
-	this->bot->getApi().sendMessage(message->chat->id, "Your Message was: " + message->text);
-	if(this->appendUser(message->from->languageCode, message->from->username, "", message->from->id))
-	{
-		std::cout << "Unknown user detected!\n";
-//		this->bot->getApi().sendMessage(message->from->id, "How is your name?");
-	}
-	else
-	{
-		std::cout << "Known User detected!\n";
-		bool process = this->checkAuthentification(message->text, message->from->id);
-	}
-	std::cout.flush();
+	std::cout << "\033[KMessageEvent Called!\n";
+	std::cout << "User " << message->from->username << " with id " << message->from->id << " sent: " << message->text << std::endl;
+//
+//	// This block was only for testing purposes and will be removed soon.
+//	this->bot->getApi().sendMessage(message->chat->id, "Your Message was: " + message->text);
+//	if(this->appendUser(message->from->languageCode, message->from->username, "", message->from->id))
+//	{
+//		std::cout << "Unknown user detected!\n";
+//		//this->bot->getApi().sendMessage(message->from->id, "How is your name?");
+//	}
+//	else
+//	{
+//		std::cout << "Known User detected!\n";
+//		bool process = this->checkAuthentification(message->text, message->from->id);
+//	}
+//	std::cout.flush();
 
 	// build message
-	::capnp::MallocMessageBuilder msgBuilder;
 	Message m(message);
-	m.toCapnp(msgBuilder);
-
 
 	// send
+    ::capnp::MallocMessageBuilder msgBuilder;
+    m.toCapnp(msgBuilder);
 	this->czPub->send(msgBuilder);
+}
+
+void Robot::dispatchMessage(::capnp::FlatArrayMessageReader& reader)
+{
+    Message m;
+    m.fromCapnp(reader);
+    this->bot->getApi().sendMessage(m.getChatId(), m.getText());
 }
