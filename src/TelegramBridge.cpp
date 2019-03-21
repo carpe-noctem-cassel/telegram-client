@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
-//#include <sys/types.h>
+#include <sys/types.h>
 #include <zmq.hpp>
 #include "Robot.h"
 //#include "Message.h"

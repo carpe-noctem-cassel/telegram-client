@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(telegram-client)
 
 add_compile_options(-std=c++11)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ## FIND THIRD PARTY LIBRARIES
 
@@ -10,11 +10,6 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(CapnProto REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system )
-#find_package(CURL)
-#if (CURL_FOUND)
-#    include_directories(${CURL_INCLUDE_DIRS})
-#    add_definitions(-DHAVE_CURL)
-#endif()
 
 ## ZMQ
 find_package(PkgConfig)
@@ -58,7 +53,6 @@ add_executable(telegram-bridge
 )
 target_link_libraries(telegram-bridge
   telegram-msgs
-  TgBot
   robot
   message
   ${CMAKE_THREAD_LIBS_INIT}
@@ -95,10 +89,8 @@ add_library(robot src/Robot.cpp include/Robot.h)
 target_link_libraries(robot
         TgBot
         user
-        ${OPENSSL_LIBRARIES}
-        ${CAPNP_LIBRARIES}
-        ${ZeroMQ_LIBRARIES}
-        ${Boost_LIBRARIES})
+        message
+        )
 target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
 add_library(message src/Message.cpp include/Message.h)

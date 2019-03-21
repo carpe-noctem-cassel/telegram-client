@@ -1,9 +1,6 @@
 #include "Robot.h"
 #include "Message.h"
 #include "User.h"
-
-//#include <capnzero-base-msgs/string.capnp.h>
-
 #include <capnp/common.h>
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
