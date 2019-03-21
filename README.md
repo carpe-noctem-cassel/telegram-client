@@ -45,7 +45,7 @@ https://github.com/open-source-parsers/jsoncpp
    If the script did not crash you are done.
 6. Install the dependencies for the telegram api:  
 ```bash
-sudo apt install g++ make binutils cmake libssl-dev libboost-system-dev capnproto libcapnp-dev ros-melodic-full python-catkin-tools
+sudo apt install g++ make binutils cmake libssl-dev libboost-system-dev capnproto libcapnp-dev ros-melodic-desktop-full python-catkin-tools
 ```
 7. clone the telegram bot api using following command:
 ```bash
@@ -124,6 +124,10 @@ cd <wokspace>/
 24. Build the catkin projects with:
 ```bash
 catkin build
+```
+25. Set an environment Variable to the root of your workspace inside your .bashrc:
+```bash
+export KEY_PATH=<Path/to/your/telegram.key>
 ```
 25. To run the bot you have to ge an api key first. The key is not inside the repository for obvieous reasons.
     Add a file called telegram.key and paste the api key into the file. If you dont have a key,you could optain it by texting the botfather bot. [Here is the Botfather](https://telegram.me/botfather)

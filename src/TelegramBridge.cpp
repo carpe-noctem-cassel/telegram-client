@@ -19,27 +19,35 @@ int main(int argc, char *argv[])
 //    m.toCapnp(msgBuilder);
 
     // Get workspace path and loadd key from file
-//    std::cout << "Trying to read AAPI-Key . . .\n";
-    std::string path = std::getenv("ROS_WORKSPACE");
-    std::string keyPath = path + "/../src/telegram-client/telegram.key";
-    std::ifstream input(keyPath, std::ifstream::in);
-    if(input.good())
+    std::cout << "Trying to read AAPI-Key . . .\n";
+    if(std::getenv("KEY_PATH") != NULL)
     {
-//   /home/stefan/teamwork-ws/logs/telegram-client/build.make.050.log     std::cout << "getting API-Key . . .\n";
-        std::string key;
-        input >> key;
+        std::string path = std::getenv("KEY_PATH");
+        std::cout << "ROSWS: " << path << '\n';
+        std::ifstream input(path, std::ifstream::in);
+        if(input.good())
+        {
+            std::cout << "getting API-Key . . .\n";
+            std::string key;
+            input >> key;
 
-        void* ctx = zmq_ctx_new();
-        std::cout << "\033[30;48;5;51mBot Status: \033[31mOFFLINE\033[0m\n";
-        std::cout << "API-key: " << key << '\n';
-        Robot r(key, "Pinky", ctx);
-        r.setupTelegram();
-        r.setupUpstream();
-        r.receiveMessages();
-        zmq_ctx_term(ctx);
+            void* ctx = zmq_ctx_new();
+            std::cout << "\033[30;48;5;51mBot Status: \033[31mOFFLINE\033[0m\n";
+            std::cout << "API-key: " << key << '\n';
+            Robot r(key, "Pinky", ctx);
+            r.setupTelegram();
+            r.setupUpstream();
+            r.receiveMessages();
+            zmq_ctx_term(ctx);
+        } else
+        {
+            std::cerr << "ERROR: could not open key File at: " << path << "!\n";
+        }
     } else
     {
-        std::cerr << "ERROR: could not open key File at: " << keyPath << "!\n";
+        std::cerr << "ERROR: Could not find the environment Variable \"KEY_PATH\"!\n"
+                  << "Please include it into your .bashrc file and restart your terminal.\n"
+                  << "export KEY_PATH=<path/to/your/keyfile>\n";
     }
 	return 0;
 }
