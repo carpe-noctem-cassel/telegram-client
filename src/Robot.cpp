@@ -21,9 +21,9 @@ Robot::Robot(std::string key, std::string rName, void* ctx)
 	std::cout << "Set up some stuff! Creating sockets . . .\n";
 	this->czPub = new capnzero::Publisher(this->context, this->topicDown);
 //	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
-    this->czPub->bind(capnzero::CommType::UDP, "224.0.0.2:5555");
+    this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
     this->czSub = new capnzero::Subscriber(this->context, this->topicUp);
-    this->czSub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
+    this->czSub->connect(capnzero::CommType::TCP, "127.0.0.1:5555");
     std::cout << "End of constructor\n";
 }
 
