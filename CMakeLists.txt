@@ -95,6 +95,7 @@ target_link_libraries(robot
         message
         )
 target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
+set_property(TARGET robot PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_library(message src/Message.cpp include/Message.h)
 
