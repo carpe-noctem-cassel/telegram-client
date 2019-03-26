@@ -10,7 +10,7 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(CapnProto REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system )
-find_package(PythonLibs REQUIRED)
+#find_package(PythonLibs REQUIRED)
 #find_package(systemd REQUIRED)
 
 ## ZMQ
@@ -102,9 +102,9 @@ add_library(message src/Message.cpp include/Message.h)
 add_library(user src/User.cpp include/User.h)
 
 # NLP-PROCESSING TEST
-add_executable(nlp src/nlp.cpp)
+#add_executable(nlp src/nlp.cpp)
 #target_compile_definitions(nlp PUBLIC spacy)
-target_link_libraries(nlp spacy)
+#target_link_libraries(nlp spacy)
 
 ## TELEGRAM-CAPNZERO-MESSAGE
 set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
