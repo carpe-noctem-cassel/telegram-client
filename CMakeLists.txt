@@ -10,6 +10,8 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(CapnProto REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system )
+#find_package(PythonLibs REQUIRED)
+#find_package(systemd REQUIRED)
 
 ## ZMQ
 find_package(PkgConfig)
@@ -45,6 +47,7 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
   ${ZeroMQ_INCLUDE_DIRS}
   ${CAPNP_INCLUDE_DIRS}
+#  ${PYTHON_INCLUDE_DIR}
 )
 
 ## TELEGRAM-BRIDGE
@@ -75,7 +78,7 @@ add_executable(msgecho
         )
 
 target_link_libraries(msgecho
-        telegram-msgs
+        telegram-msgs${PYTHON_LIBRARIES}
         message
         ${catkin_LIBRARIES}
         ${CAPNP_LIBRARIES}
@@ -92,10 +95,16 @@ target_link_libraries(robot
         message
         )
 target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
+set_property(TARGET robot PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_library(message src/Message.cpp include/Message.h)
 
 add_library(user src/User.cpp include/User.h)
+
+# NLP-PROCESSING TEST
+#add_executable(nlp src/nlp.cpp)
+#target_compile_definitions(nlp PUBLIC spacy)
+#target_link_libraries(nlp spacy)
 
 ## TELEGRAM-CAPNZERO-MESSAGE
 set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")

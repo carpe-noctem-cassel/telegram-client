@@ -49,8 +49,8 @@ private:
     std::vector<std::string> commands;
     std::vector<User> users;
     TgBot::Bot* bot;
-    // capnzerostuff
     void* context;
+    // capnzerostuff
     capnzero::Publisher* czPub;
     capnzero::Subscriber* czSub;
 
