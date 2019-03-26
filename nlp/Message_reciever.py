@@ -36,12 +36,28 @@ while True:
     print(msg.text)
 
     # nlp stuff
-    new_string = ""
     doc = nlp(msg.text)
+    root = ""
+    subj = ""
+    obj = ""
+    print("\x1B[33m" + msg.text + "\x1B[0m")
     for token in doc:
-        if token.pos_ == "NOUN":
-            new_string += token.text + " "
+        print("\x1B[41m", token.text, "\x1B[0m is a \x1b[41m", spacy.explain(token.dep_), "({})".format(token.dep_),
+              "\x1B[0m <--", token.head.text, spacy.explain(token.head.pos_), [child for child in token.children])
+        if token.dep_ in ["sb", "nsubj", "nsubjpass"]:
+            subj = token.text
+        elif token.dep_ == "ROOT" and token.pos_ == "VERB" and root == "":
+            root = token.text
+        elif token.dep_ in ["oa", "dobj", "pobj"] and obj == "":
+            obj = token.text
 
-    print(new_string)
+    if root == "":
+        root = doc[0].text
 
-    socket_up.send(message)
+    print("\x1B[32m", doc.ents, "\x1B[0m")
+    print("\x1B[34mROOT: " + root + "\x1B[0m")
+    print("\x1B[34mSUBJECT: " + subj + "\x1B[0m")
+    print("\x1B[34mOBJECT: " + obj + "\x1B[0m")
+    print("\x1B[32mTRIPLET: {}:({} | {})\x1B[0m".format(root, subj, obj))
+    print("\x1B[31m===========================================================================\x1B[0m")
+
