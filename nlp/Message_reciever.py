@@ -13,14 +13,14 @@ import message_capnp
 import spacy
 
 
-rcv_topic = b""
+rcv_topic = ""
 snd_topic = "msg_source"
 context = zmq.Context()
 socket_down = context.socket(zmq.SUB)
 socket_up = context.socket(zmq.PUB)
 socket_down.connect("tcp://127.0.0.1:5555")
 # socket_down.bind("ipc:///@capnzero.ipc")
-socket_down.setsockopt(zmq.SUBSCRIBE, rcv_topic)
+socket_down.setsockopt_string(zmq.SUBSCRIBE, rcv_topic)
 
 # nlp initializations
 nlp = spacy.load('de')
