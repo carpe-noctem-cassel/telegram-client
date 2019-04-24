@@ -156,7 +156,7 @@ export KEY_PATH=<Path/to/your/telegram.key>
                 <li>[x] Create Listener to echo messages for debugging. </li>
                 <li>[x] Create dispatcher to send messages to Telegram.</li>
                 <li>[x] Send Messsages from Robot to Telegram </li>
-                <li>[ ] Combine sending and reciving with threads.</li>
+                <li>[x] Combine sending and reciving with threads.</li>
                 <li>[ ] Create dummy bridge for debugging work.</li>
             </ul>
         </td>
@@ -170,6 +170,28 @@ export KEY_PATH=<Path/to/your/telegram.key>
                 <li>[ ] Build working example with the libraries to test which works best.</li>
                 <li>[ ] Create a program that parses Messages from the bridge.</li>
                 <li>[ ] Get add filling implicit information from common knowledge or user information.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>usr_manager</td>
+        <td>A Program that stores and manages user information.</td>
+        <td>
+            <ul>
+                <li>[ ] Create a program that listens to incoming messages and stores the userinfo from messages, if the userid is not stored yet.</li>
+                <li>[ ] add the ability to add additional user info via a message or prompt.</li>
+                <li>[ ] implement a way to search for information about a specific user.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>conf_manager</td>
+        <td>A program that manages configurations between all parts of the system. This part is optional and will likely not be implemented.</td>
+        <td>
+            <ul>
+                <li>[ ] create a program that can read and store key/value pairs to a file.</li>
+                <li>[ ] Create a program to querry/write for configurations over socket and add socket support to the program.</li>
+                <li>[ ] add notifications on changed values.</li>
             </ul>
         </td>
     </tr>
