@@ -2,7 +2,7 @@
 
 echo "Welcome to teamwork-\"Chatbot\" setup assistant."
 
-depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl capnproto libcapnp-dev libzmq3-dev ros-melodic-full python-catkin-tools"
+depends="git g++ make binutils cmake libssl-dev libboost-system-dev curl capnproto libcapnp-dev libzmq3-dev ros-melodic-desktop-full python-catkin-tools"
 
 echo "Adding ros repository to sources"
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -16,7 +16,7 @@ then
     echo "export PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \[\033[01;31m\]$(__git_ps1 \"[%s]\")\[\033[01;34m\]\$\[\033[00m\] '" >> ~/bashrc
     echo "# ROS specific" >> ~/.bashrc
     echo "source /opt/ros/melodic/setup.sh" >> ~/.bashrc
-    echo "export DOMAIN_FOLDER=/home/stefan/teamwork-ws/" >> ~/.bashrc
+    echo "export DOMAIN_FOLDER=$(pwd)" >> ~/.bashrc
 fi
 
 echo "Adding zeromq key"
@@ -25,23 +25,42 @@ wget https://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-
 echo "Installing neccesary dependencies"
 sudo apt install -y $depends
 
+while true; do
+    read -p "Did you setup an ssh key for your github account?(y/n)" yn
+    case $yn in 
+        [Yy]* ) overSSSH=true;;
+        [Nn]* ) overSSH=false;;
+        * ) Please answer with yes or no;;
+    esac
+done
+
+
 echo "Cloning repositorys"
 (
     cd src
     if [ -d "$telegramm-client" ]; then
         echo "Skipping repository \"telegram-client\""
     else
-        git clone https://github.com/carpe-noctem-cassel/telegram-client.git
+        if "$overSSH"; then
+            git clone git@github.com:dasys-lab/telegram-client.git
+        else
+            git clone https://github.com/carpe-noctem-cassel/telegram-client.git
     fi
     if [ -d "$tgbot-cpp" ]; then
         echo "Skipping repository \"tgbot-cpp\""
     else
-        git clone https://github.com/reo7sp/tgbot-cpp.git
+        if "$overSSH"; then
+            git clone git@github.com:dasys-lab/tgbot-cpp.git
+        else
+            git clone https://github.com/dasys-lab/tgbot-cpp.git
     fi
     if [-d "$capnzero"]; then
         echo "Skipping repository \"capnzero\""
     else
-        git clone https://github.com/dasys-lab/capnzero.git
+        if "$overSSH"; then
+            git clone git@github.com:dasys-lab/capnzero.git
+        else
+            git clone https://github.com/dasys-lab/capnzero.git
     fi
 )
 
