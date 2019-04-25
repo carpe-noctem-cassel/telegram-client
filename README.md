@@ -135,10 +135,11 @@ catkin build
 
 27. Set an environment Variable to the root of your workspace inside your .bashrc:
 ```bash
-export KEY_PATH=<Path/to/your/telegram.key>
+export KEY_PATH=Path/to/your/telegram.key
 ```
 
 ## Parts of the project  
+These are the components, that we anticipated to be usefull. They are not fixed, so they can change during further developement.
 <table>
     <tr>
         <th>Name</th>
