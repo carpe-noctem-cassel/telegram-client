@@ -1,4 +1,4 @@
-#!/bin/bash
+    #!/bin/bash
 
 echo "Welcome to teamwork-\"Chatbot\" setup assistant."
 
@@ -28,7 +28,7 @@ sudo apt install -y $depends
 while true; do
     read -p "Did you setup an ssh key for your github account?(y/n)" yn
     case $yn in 
-        [Yy]* ) overSSSH=true;;
+        [Yy]* ) overSSH=true;;
         [Nn]* ) overSSH=false;;
         * ) Please answer with yes or no;;
     esac
@@ -65,8 +65,7 @@ echo "Cloning repositorys"
 )
 
 echo "Building Telegram api"
-dir=$(pwd)
-(cd $dir/src/tgbot-cpp ; cmake . ; make ; sudo make install)
+(cd src/tgbot-cpp ; cmake . ; make ; sudo make install)
 
 echo "Building catkin packages"
 (catkin build)
