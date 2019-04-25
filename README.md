@@ -17,7 +17,7 @@ https://capnproto.org/
     ```
 2. Enter the workspace directory using  
     ```bash 
-    cd  <workspace>/src
+    cd  <workspace>
     ```
 3. Add the package source for zeromq draft verion with the folllowing three commands:  
    ```bash
@@ -45,50 +45,54 @@ https://capnproto.org/
 ```bash
 sudo apt install g++ make binutils cmake libssl-dev libboost-system-dev capnproto libcapnp-dev ros-melodic-desktop-full python-catkin-tools
 ```
-7. clone the telegram bot api using following command. If you have set up an ssh key for your computer on github, we would advise to use the commands for ssh, since we find it easier to work with from day to day:
+7. navigate into src directory:
+```bash
+cd src
+```
+8. clone the telegram bot api using following command. If you have set up an ssh key for your computer on github, we would advise to use the commands for ssh, since we find it easier to work with from day to day:
 ```bash
 git clone https://github.com/dasys-lab/tgbot-cpp.git # over https or 
 git clone git@github.com:dasys-lab/tgbot-cpp.git # over ssh
 ```
-8. Enter the repository:
+9. Enter the repository:
 ```bash
 cd tgbot-cpp
 ```
-9. run Cmake with:  
+10. run Cmake with:  
 ```bash
 cmake .
 ```
-10. build the api using:  
+11. build the api using:  
 ```bash
 make
 ```
-11. Install the api using:  
+12. Install the api using:  
 ```bash
 sudo make install
 ```
-12. leave the directory:  
+13. leave the directory:  
 ```bash
 cd ..
 ```
-13. clone our repository. If you have set up an ssh key for your computer on github, we would advise to use the commands for ssh, since we find it easier to work with from day to day:  
+14. clone our repository. If you have set up an ssh key for your computer on github, we would advise to use the commands for ssh, since we find it easier to work with from day to day:  
 ```bash
 git clone https://github.com/carpe-noctem-cassel/telegram-client.git # over https or 
 git clone git@github.com:dasys-lab/telegram-client.git # over ssh
 ```
-14. clone the capnzero repository. If you have set up an ssh key for your computer on github, we would advise to use the commands for ssh, since we find it easier to work with from day to day:
+15. clone the capnzero repository. If you have set up an ssh key for your computer on github, we would advise to use the commands for ssh, since we find it easier to work with from day to day:
 ```bash
 git clone https://github.com/dasys-lab/capnzero.git # over https or
 git clone git@github.com:dasys-lab/capnzero.git # over ssh
 ```
-15. Download and install the gpg key for the package-source of zeromq:  
+16. Download and install the gpg key for the package-source of zeromq:  
 ```bash
 wget https://download.opensuse.org/repositories/network:/messaging:/zeromq:/git-draft/xUbuntu_18.04/Release.key -O- | sudo apt-key add
 ```
-16. Install zeromq:libzmq3-dev ros-melodic-full python-catkin-tools
+17. Install zeromq:libzmq3-dev ros-melodic-full python-catkin-tools
 ```bash
 sudo apt install libzmq3-dev
 ```
-17. Installing the official Telegram client:  
+18. Installing the official Telegram client:  
     * Make shure that you are in your workspace and change to the directory of the telegram-client repository.  
     ```bash
     cd telegram-client
@@ -97,15 +101,15 @@ sudo apt install libzmq3-dev
     ```bash
     sudo ./telegram-desktop-setup.sh  
     ```
-18. Change the ownership of the executable of the telegram client.
+19. Change the ownership of the executable of the telegram client.
 ```bash
 sudo chown <username> /usr/local/bin/telegram
 ```
-19. Open your .bashrc file:
+20. Open your .bashrc file:
 ```bash
 nano ~/.bashrc
 ```
-20. Scroll to the end of the file and append the following line:
+21. Scroll to the end of the file and append the following line:
 ```bash
 #fancy prompt that also shows the current branch
 export PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \[\033[01;31m\]$(__git_ps1 "[%s]")\[\033[01;34m\]\$\[\033[00m\] '
@@ -113,27 +117,27 @@ export PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \[\033[01;31m\]$(__git_ps1 "[
 source /opt/ros/melodic/setup.sh
 export DOMAIN_FOLDER=Path/to/the/workspace
 ```
-21. Close your shell, or reload it:
+22. Close your shell, or reload it:
 ```bash
 exit # If you want to open a new
 source ~/.bashrc # If you want to reload the shell
 ```
-22. Open a new shell if yout closed the old one
-23. navigate back to your workspace:
+23. Open a new shell if yout closed the old one
+24. navigate back to your workspace:
 ```bash
 cd <wokspace>/
 ```
-24. Build the catkin projects with:
+25. Build the catkin projects with:
 ```bash
 catkin build
 ```
 
-25. To run the bot you have to ge an api key first. The key is not inside the repository for obvieous reasons.
+26. To run the bot you have to ge an api key first. The key is not inside the repository for obvieous reasons.
     Add a file called telegram.key and paste the api key into the file. If you dont have a key,you could optain it by texting the botfather bot. [Here is the Botfather](https://telegram.me/botfather) Creating a new api key needs no further explanation, since it is a guided process.
     
-26. Put your api-key into a text file and place it somewhere you will find it. We suggest naming it telegram.key
+27. Put your api-key into a text file and place it somewhere you will find it. We suggest naming it telegram.key
 
-27. Set an environment Variable to the root of your workspace inside your .bashrc:
+28. Set an environment Variable to the root of your workspace inside your .bashrc:
 ```bash
 export KEY_PATH=Path/to/your/telegram.key
 ```
