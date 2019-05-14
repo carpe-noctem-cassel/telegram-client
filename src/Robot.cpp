@@ -19,7 +19,8 @@ Robot::Robot(std::string key, std::string rName, void* ctx)
 	this->topicDown = "downstream";
 	this->topicUp = "upstream";
 	std::cout << "Set up some stuff! Creating sockets . . .\n";
-	this->czPub = new capnzero::Publisher(this->context, this->topicDown);
+	this->czPub = new capnzero::Publisher(this->context);
+	this->czPub->setDefaultGroup(this->topicDown);
 //	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
     this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
     this->czSub = new capnzero::Subscriber(this->context, this->topicUp);
