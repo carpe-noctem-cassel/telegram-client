@@ -10,21 +10,6 @@ find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(CapnProto REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system )
-#find_package(PythonLibs REQUIRED)
-#find_package(systemd REQUIRED)
-
-## ZMQ
-find_package(PkgConfig)
-pkg_check_modules(PC_ZeroMQ QUIET zmq)
-find_path(ZeroMQ_INCLUDE_DIR
-  NAMES zmq.hpp
-  PATHS ${PC_ZeroMQ_INCLUDE_DIRS}
-)
-find_library(ZeroMQ_LIBRARY
-  NAMES zmq
-  PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
-)
-
 
 ## ROS OPTIONAL
 find_package(catkin QUIET)
@@ -65,7 +50,6 @@ target_link_libraries(telegram-bridge
   ${CAPNP_LIBRARIES}
   ${catkin_LIBRARIES}
 )
-target_compile_definitions(telegram-bridge PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
 
 if (NOT catkin_FOUND)
@@ -86,7 +70,6 @@ target_link_libraries(msgecho
         ${Boost_LIBRARIES}
         pthread
         )
-target_compile_definitions(msgecho PUBLIC ZMQ_BUILD_DRAFT_API=1)
 
 add_library(robot src/Robot.cpp include/Robot.h)
 target_link_libraries(robot
@@ -101,10 +84,6 @@ add_library(telegram-message src/Message.cpp include/Message.h)
 
 add_library(user src/User.cpp include/User.h)
 
-# NLP-PROCESSING TEST
-#add_executable(nlp src/nlp.cpp)
-#target_compile_definitions(nlp PUBLIC spacy)
-#target_link_libraries(nlp spacy)
 
 ## TELEGRAM-CAPNZERO-MESSAGE
 set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
