@@ -1,4 +1,4 @@
-#pragma once
+    #pragma once
 
 #include "telegram_msgs/message.capnp.h"
 

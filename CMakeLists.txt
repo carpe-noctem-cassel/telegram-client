@@ -18,9 +18,14 @@ if(catkin_FOUND)
 
   catkin_package(
     INCLUDE_DIRS include
-    LIBRARIES telegram-bridge telegram-msgs telegram-message
+    LIBRARIES telegram-bridge telegram-msgs
     CATKIN_DEPENDS capnzero
   #  DEPENDS system_lib
+  )
+  catkin_package(
+    INCLUDE_DIRS include
+    LIBRARIES telegram_msg_wrapper
+    CATKIN_DEPENDS capnzero
   )
 else (catkin_FOUND)
   set(catkin_LIBRARIES "capnzero")
@@ -32,7 +37,6 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
   ${ZeroMQ_INCLUDE_DIRS}
   ${CAPNP_INCLUDE_DIRS}
-#  ${PYTHON_INCLUDE_DIR}
 )
 
 ## TELEGRAM-BRIDGE
@@ -42,7 +46,7 @@ add_executable(telegram-bridge
 target_link_libraries(telegram-bridge
   telegram-msgs
   robot
-  telegram-message
+  telegram_msg_wrapper
   ${CMAKE_THREAD_LIBS_INIT}
   ${OPENSSL_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -62,8 +66,8 @@ add_executable(msgecho
         )
 
 target_link_libraries(msgecho
-        telegram-msgs${PYTHON_LIBRARIES}
-        telegram-message
+        telegram-msgs
+        telegram_msg_wrapper
         ${catkin_LIBRARIES}
         ${CAPNP_LIBRARIES}
         ${ZeroMQ_LIBRARIES}
@@ -75,12 +79,12 @@ add_library(robot src/Robot.cpp include/Robot.h)
 target_link_libraries(robot
         TgBot
         user
-        telegram-message
+        telegram_msg_wrapper
         )
 target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
 set_property(TARGET robot PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-add_library(telegram-message src/Message.cpp include/Message.h)
+add_library(telegram_msg_wrapper src/Message.cpp include/Message.h)
 
 add_library(user src/User.cpp include/User.h)
 
