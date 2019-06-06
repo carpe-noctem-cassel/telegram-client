@@ -14,7 +14,7 @@ find_package(Boost REQUIRED COMPONENTS system )
 ## ROS OPTIONAL
 find_package(catkin QUIET)
 if(catkin_FOUND)
-  find_package(catkin REQUIRED COMPONENTS capnzero)
+  find_package(catkin REQUIRED COMPONENTS capnzero system_config)
 
   catkin_package(
     INCLUDE_DIRS include
@@ -25,7 +25,7 @@ if(catkin_FOUND)
   catkin_package(
     INCLUDE_DIRS include
     LIBRARIES telegram_msg_wrapper
-    CATKIN_DEPENDS capnzero
+    CATKIN_DEPENDS capnzero system_config
   )
 else (catkin_FOUND)
   set(catkin_LIBRARIES "capnzero")

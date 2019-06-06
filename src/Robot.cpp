@@ -5,6 +5,7 @@
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
 #include <kj/array.h>
+#include <SystemConfig.h>
 
 #include <iostream>
 
@@ -13,18 +14,21 @@
 Robot::Robot(std::string key, std::string rName, void* ctx)
 {
 	std::cout << "Creating a new Robot.\n";
+    essentials::SystemConfig *sc = essentials::SystemConfig::getInstance();
 	this->apiKey = key;
 	this->setRobotName(rName);
 	this->context = ctx;
-	this->topicDown = "downstream";
-	this->topicUp = "upstream";
+	this->topicDown = (*sc)["Chatbot"]->get<std::string>("Topics.RecievedMessageTopic", NULL);
+	this->topicUp = (*sc)["Chatbot"]->get<std::string>("Topics.SendMessageTopic", NULL);
 	std::cout << "Set up some stuff! Creating sockets . . .\n";
 	this->czPub = new capnzero::Publisher(this->context);
 	this->czPub->setDefaultGroup(this->topicDown);
 //	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
-    this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
+    //this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
+    this->czPub->bind(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.OutputAddress", NULL));
     this->czSub = new capnzero::Subscriber(this->context, this->topicUp);
-    this->czSub->connect(capnzero::CommType::TCP, "127.0.0.1:5556");
+    //this->czSub->connect(capnzero::CommType::TCP, "127.0.0.1:5556");
+    this->czSub->connect(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.InputAddress", NULL));
     std::cout << "End of constructor\n";
 }
 

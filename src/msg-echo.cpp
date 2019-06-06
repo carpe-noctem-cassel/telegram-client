@@ -7,6 +7,8 @@
 #include <capnp/message.h>
 #include <capnp/serialize-packed.h>
 
+#include <SystemConfig.h>
+
 #include <signal.h>
 #include <thread>
 #include <ctime>
@@ -18,7 +20,7 @@
 
 void callback(::capnp::FlatArrayMessageReader& reader)
 {
-//    std::cout << "Called callback..." << std::endl;
+    std::cout << "Called callback..." << std::endl;
     Message m;
     m.fromCapnp(reader);
     std::cout << "\033[31;1m" << m.getUserName() << '(' << m.getUserId() << ")(" << m.getChatId() << ")\033[0m at ";
@@ -56,10 +58,11 @@ int main(int argc, char** argv)
 //    }
 
     void* ctx = zmq_ctx_new();
+    essentials::SystemConfig *sc = essentials::SystemConfig::getInstance();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
 //    sub->connect(capnzero::CommType::IPC, "@capnzero.ipc");
 //    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
-    sub->connect(capnzero::CommType::TCP, "127.0.0.1:5555");
+    sub->connect(capnzero::CommType::INT, "udp://224.0.0.2:5555");
     sub->subscribe(&callback);
 
     while (!interrupted) {

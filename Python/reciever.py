@@ -1,15 +1,13 @@
-import time
 import zmq
 import capnp
-import test_capnp
+import message_capnp
 
 context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5555")
+socket = context.socket(zmq.SUB)
+socket.connect("tcp://224.0.0.2:5555")
+socket.setsockopt(zmq.SUBSCRIBE, b"tgr")
 
 while True:
     message = socket.recv()
-    msg = test_capnp.Test.from_bytes(message)
+    msg = message_capnp.Message.from_bytes(message)
     print(msg.text)
-    time.sleep(1)
-    socket.send(b"World")
