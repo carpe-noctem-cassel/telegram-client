@@ -8,9 +8,10 @@
 
   <license>GPLv3</license>
 
-  <author email="jane.doe@example.com">Stefan Schmelz</author>
+  <author email="stefan_schmelz@gmx.net">Stefan Schmelz</author>
 
   <depend>capnzero</depend>
+  <depend>system_config</depend>
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>
