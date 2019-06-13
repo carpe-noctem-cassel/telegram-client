@@ -5,7 +5,6 @@ add_compile_options(-std=c++11)
 #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ## FIND THIRD PARTY LIBRARIES
-
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(CapnProto REQUIRED)
@@ -14,7 +13,7 @@ find_package(Boost REQUIRED COMPONENTS system )
 ## ROS OPTIONAL
 find_package(catkin QUIET)
 if(catkin_FOUND)
-  find_package(catkin REQUIRED COMPONENTS capnzero system_config)
+  find_package(catkin REQUIRED COMPONENTS capnzero system_config id_capnzero)
 
   catkin_package(
     INCLUDE_DIRS include
@@ -62,42 +61,63 @@ endif()
 
 ## MESSAGE ECHO
 add_executable(msgecho
-        src/msg-echo.cpp
-        )
+  src/msg-echo.cpp
+)
 
 target_link_libraries(msgecho
-        telegram-msgs
-        telegram_msg_wrapper
-        ${catkin_LIBRARIES}
-        ${CAPNP_LIBRARIES}
-        ${ZeroMQ_LIBRARIES}
-        ${Boost_LIBRARIES}
-        pthread
-        )
+  telegram-msgs
+  telegram_msg_wrapper
+  ${catkin_LIBRARIES}
+  ${CAPNP_LIBRARIES}
+  ${ZeroMQ_LIBRARIES}
+  ${Boost_LIBRARIES}
+  pthread
+)
 
 add_library(robot src/Robot.cpp include/Robot.h)
 target_link_libraries(robot
-        TgBot
-        user
-        telegram_msg_wrapper
-        )
-target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
-set_property(TARGET robot PROPERTY POSITION_INDEPENDENT_CODE ON)
+  TgBot
+  user
+  telegram_msg_wrapper
+)
+# target_compile_definitions(robot PUBLIC ZMQ_BUILD_DRAFT_API=1)
+# set_property(TARGET robot PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_library(telegram_msg_wrapper src/Message.cpp include/Message.h)
 
 add_library(user src/User.cpp include/User.h)
 
 
+## TESTMESSAGE
+add_executable(testmsg
+  src/testmsg.cpp
+)
+
+target_link_libraries(testmsg
+  telegram-msgs
+  telegram_msg_wrapper
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${CAPNP_LIBRARIES}
+  ${ZeroMQ_LIBRARIES}
+  pthread
+)
+
+
 ## TELEGRAM-CAPNZERO-MESSAGE
-set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/msg")
+set(CAPNPC_IMPORT_DIRS "${id_capnzero_SOURCE_PREFIX}/include")# include external capnp message schema files
+
+set(capnp_message_folder "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
 file(GLOB_RECURSE capnp_messages ${capnp_message_folder} *.capnp)
+
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
 endif()
-set(CAPNPC_SRC_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/msg)
+
+set(CAPNPC_SRC_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
 set(CAPNPC_OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/telegram_msgs")
 capnp_generate_cpp(CAPNP_SRCS CAPNP_HDRS ${capnp_messages})
+
 add_library(telegram-msgs ${CAPNP_SRCS})
 if (NOT catkin_FOUND)
   target_include_directories(telegram-msgs PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

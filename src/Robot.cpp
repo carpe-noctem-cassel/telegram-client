@@ -141,8 +141,8 @@ void Robot::receiveMessages()
 	char animatedChar = ' ';
 		try
 		{
-			TgBot::TgLongPoll longPoll(*(this->bot));
 			std::cout << "Starting long poll loop\n";
+			TgBot::TgLongPoll longPoll(*(this->bot));
 			while(this->running)
 			{
 //			    std::cout << "TEST" << std::endl;
@@ -209,7 +209,7 @@ void Robot::commandEvent(TgBot::Message::Ptr message)
 
 void Robot::messageEvent(TgBot::Message::Ptr message)
 {
-	std::cout << "\033[KMessageEvent Called!\n";
+	std::cout << "\033[0KMessageEvent Called!\n";
 	std::cout << "User " << message->from->username << " with id " << message->from->id << " sent: " << message->text << std::endl;
 //
 //	// This block was only for testing purposes and will be removed soon.

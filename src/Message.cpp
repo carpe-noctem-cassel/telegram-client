@@ -151,7 +151,8 @@ void Message::fromCapnp(::capnp::FlatArrayMessageReader& reader)
     telegram_msgs::Message::Reader msgReader = reader.getRoot<telegram_msgs::Message>();
     this->setText(msgReader.getText());
     this->setType((MsgType) msgReader.getType());
-    this->setUserId(msgReader.getUserId());
+    auto userID = msgReader.getUserId();
+    this->setUserId(userID);
     this->setChatId(msgReader.getChatId());
     this->setLanguageCode(msgReader.getLanguageCode());
     this->setFirstName(msgReader.getFirstName());

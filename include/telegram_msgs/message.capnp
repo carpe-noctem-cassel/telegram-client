@@ -1,6 +1,7 @@
 @0xbbcab1e12c72fc7a;
 using Cxx = import "/capnp/c++.capnp";
 $Cxx.namespace("telegram_msgs");
+using IDMsg = import "/capnzero/ID.capnp";
 
 struct Message {
 	timestamp @0 :UInt32;
