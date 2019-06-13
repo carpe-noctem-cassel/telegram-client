@@ -60,8 +60,6 @@ int main(int argc, char** argv)
     void* ctx = zmq_ctx_new();
     essentials::SystemConfig *sc = essentials::SystemConfig::getInstance();
     capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1]);
-//    sub->connect(capnzero::CommType::IPC, "@capnzero.ipc");
-//    sub->connect(capnzero::CommType::UDP, "224.0.0.2:5555");
     sub->connect(capnzero::CommType::INT, "udp://224.0.0.2:5555");
     sub->subscribe(&callback);
 
