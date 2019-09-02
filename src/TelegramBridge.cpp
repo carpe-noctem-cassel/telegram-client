@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
             std::cout << "API-key: " << key << '\n';
             Robot r(key, "Pinky", ctx);
             r.setupTelegram();
-            r.setupUpstream();
             r.receiveMessages();
             zmq_ctx_term(ctx);
         } else

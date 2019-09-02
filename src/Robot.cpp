@@ -26,9 +26,10 @@ Robot::Robot(std::string key, std::string rName, void* ctx)
 //	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
     //this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
     this->czPub->bind(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.OutputAddress", NULL));
-    this->czSub = new capnzero::Subscriber(this->context, this->topicUp);
+    this->czSub = new capnzero::Subscriber(this->context, this->topicUp, &Robot::dispatchMessage, &(*this));
     //this->czSub->connect(capnzero::CommType::TCP, "127.0.0.1:5556");
-    this->czSub->connect(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.InputAddress", NULL));
+    this->czSub->addAddress(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.InputAddress", NULL));
+    this->czSub->connect();
     std::cout << "End of constructor\n";
 }
 
@@ -178,11 +179,6 @@ void Robot::receiveMessages()
 			std::cout << e.what();
 		}
 
-}
-
-void Robot::setupUpstream()
-{
-    this->czSub->subscribe(&Robot::dispatchMessage, &(*this));
 }
 
 // ========================================================================
