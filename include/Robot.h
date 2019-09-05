@@ -46,6 +46,8 @@ private:
     std::string robotName;
     std::string topicDown;
     std::string topicUp;
+    capnzero::Protocol sendProtocol;
+    capnzero::Protocol receiveProtocol;
     std::vector<std::string> commands;
     std::vector<User> users;
     TgBot::Bot* bot;

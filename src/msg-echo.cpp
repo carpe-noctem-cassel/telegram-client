@@ -59,9 +59,10 @@ int main(int argc, char** argv)
 
     void* ctx = zmq_ctx_new();
     essentials::SystemConfig *sc = essentials::SystemConfig::getInstance();
-    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, argv[1], &callback);
-    sub->addAddress(capnzero::CommType::INT, "tcp://127.0.0.1:5555");
-    sub->connect();
+    capnzero::Subscriber* sub = new capnzero::Subscriber(ctx, capnzero::Protocol::UDP);
+    sub->setTopic(argv[1]);
+    sub->addAddress("udp://224.0.0.2:5555");
+    sub->subscribe(&callback);
 
     while (!interrupted) {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));

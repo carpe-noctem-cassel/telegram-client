@@ -18,18 +18,22 @@ Robot::Robot(std::string key, std::string rName, void* ctx)
 	this->apiKey = key;
 	this->setRobotName(rName);
 	this->context = ctx;
-	this->topicDown = (*sc)["Chatbot"]->get<std::string>("Topics.RecievedMessageTopic", NULL);
-	this->topicUp = (*sc)["Chatbot"]->get<std::string>("Topics.SendMessageTopic", NULL);
+	this->topicDown = (*sc)["Chatbot"]->get<std::string>("Communication.receive.topic", NULL);
+	this->topicUp = (*sc)["Chatbot"]->get<std::string>("Communication.send.topic", NULL);
 	std::cout << "Set up some stuff! Creating sockets . . .\n";
-	this->czPub = new capnzero::Publisher(this->context);
-	this->czPub->setDefaultGroup(this->topicDown);
+    // TODO read from config and adapt
+	this->sendProtocol = capnzero::Protocol::UDP;
+	this->czPub = new capnzero::Publisher(this->context, sendProtocol);
+	this->czPub->setDefaultTopic(this->topicDown);
 //	this->czPub->bind(capnzero::CommType::IPC, "@capnzero.ipc");
     //this->czPub->bind(capnzero::CommType::TCP, "127.0.0.1:5555");
-    this->czPub->bind(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.OutputAddress", NULL));
-    this->czSub = new capnzero::Subscriber(this->context, this->topicUp, &Robot::dispatchMessage, &(*this));
+    this->czPub->addAddress((*sc)["Chatbot"]->get<std::string>("Communication.send.address", NULL));
+    // TODO read from config and adapt
+    this->receiveProtocol = capnzero::Protocol::UDP;
+    this->czSub = new capnzero::Subscriber(this->context, this->receiveProtocol);
+    this->czSub->setTopic(this->topicUp);
     //this->czSub->connect(capnzero::CommType::TCP, "127.0.0.1:5556");
-    this->czSub->addAddress(capnzero::CommType::INT, (*sc)["Chatbot"]->get<std::string>("Communication.InputAddress", NULL));
-    this->czSub->connect();
+    this->czSub->addAddress((*sc)["Chatbot"]->get<std::string>("Communication.receive.address", NULL));
     std::cout << "End of constructor\n";
 }
 
